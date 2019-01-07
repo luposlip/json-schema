@@ -22,9 +22,15 @@ If you're using Clojure 1.7 or newer, you can convert any Throwable to a map via
 
 To switch draft versions, simply use the according version notation in the `$schema` uri (in the root of the JSON document):
 
-http://json-schema.org/draft-04/schema
-http://json-schema.org/draft-06/schema
-http://json-schema.org/draft-07/schema
+```
+{"$schema": "http://json-schema.org/draft-04/schema", ...}
+
+or:
+{"$schema": "http://json-schema.org/draft-06/schema", ...}
+
+or:
+{"$schema": "http://json-schema.org/draft-07/schema", ...}
+```
 
 JSON and JSON Schema params has to be input as either a JSON encoded string or EDN (map for both or vector for JSON).
 
