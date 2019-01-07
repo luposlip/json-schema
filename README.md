@@ -1,5 +1,9 @@
 # Clojure JSON Schema Validator
 
+```clojure
+[luposlip/json-schema "0.1.0"]
+```
+
 A Clojure library for JSON validation according to JSON Schema https://json-schema.org.
 
 It's very simple, and supports JSON Schema Draft-07.
