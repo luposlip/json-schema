@@ -1,3 +1,5 @@
+[![Clojars Project](https://img.shields.io/clojars/v/luposlip/json-schema.svg)](https://clojars.org/luposlip/json-schema)
+
 # Clojure JSON Schema Validator
 
 ```clojure
