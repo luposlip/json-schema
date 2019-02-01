@@ -6,5 +6,5 @@
   :repositories {"jitpack.io" {:url "https://jitpack.io"}}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [cheshire "5.8.1"]
-                 [com.github.everit-org.json-schema/org.everit.json.schema "1.10.0"]]
+                 [com.github.everit-org.json-schema/org.everit.json.schema "1.11.0"]]
   :repl-options {:init-ns json-schema.core})
