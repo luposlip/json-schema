@@ -13,3 +13,4 @@ All notable changes to this project will be documented in this file. This change
 - Initial public release
 
 [Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.1...HEAD
+[0.1.1]: https://github.com/luposlip/json-schema/compare/0.1.0...0.1.1
