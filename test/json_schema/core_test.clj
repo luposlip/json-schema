@@ -16,13 +16,13 @@
       (testing "Schema has to be a map"
         (is (thrown? AssertionError (json/validate "1" "2")))) 
       (testing "JSON has to be a map or an array"
-        (is (thrown? AssertionError (json/validate "1" json-schema-str)))) 
+        (is (thrown? AssertionError (json/validate json-schema-str "1")))) 
       (testing "ID has to be a number"
-        (is (thrown? RuntimeException (json/validate "{\"id\" : \"1\"}" json-schema-str)))) 
+        (is (thrown? RuntimeException (json/validate json-schema-str "{\"id\" : \"1\"}")))) 
       (testing "Valid input as JSON string"
-        (is (nil? (json/validate "{\"id\": 1}" json-schema-str)))) 
+        (is (nil? (json/validate json-schema-str "{\"id\": 1}")))) 
       (testing "Valid input as EDN"
-        (is (nil? (json/validate {:id 1} json-schema-str)))))))
+        (is (nil? (json/validate json-schema-str {:id 1})))))))
 
 (deftest validate-exclusive-minimum
   (testing "Validate exclusiveMinimum (which is part of Draft-07"
@@ -35,11 +35,11 @@
           json-edn-valid {:id 0.001}
           json-edn-invalid {:id 0}] 
       (testing "valid input VALIDATES"
-        (is (nil? (json/validate json-edn-valid json-schema-edn))))      
+        (is (nil? (json/validate json-schema-edn json-edn-valid))))      
       (testing "valid input does NOT validate"
         (is (thrown?
              clojure.lang.ExceptionInfo
-             (json/validate json-edn-invalid json-schema-edn)))))))
+             (json/validate json-schema-edn json-edn-invalid)))))))
 
 (deftest definitions-and-pointers
   (testing "JSON Schema validation with definitions and JSON Pointers"
@@ -62,4 +62,4 @@
               \"street_address\": \"1st Street SE\",
               \"city\": \"Washington\",
               \"state\": \"DC\"}}"] 
-      (is (nil? (json/validate json schema-str))))))
+      (is (nil? (json/validate schema-str json))))))

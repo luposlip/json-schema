@@ -46,7 +46,7 @@
 
    JSON and JSON Schema params has to be input as either a
    JSON encoded string or EDN (map for both or vector for JSON)."
-  [json json-schema] 
+  [json-schema json] 
   (try
     (.validate (prepare-schema json-schema) (prepare-json json))
     (catch ValidationException e 

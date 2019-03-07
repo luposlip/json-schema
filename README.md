@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator
 
 ```clojure
-[luposlip/json-schema "0.1.1"]
+[luposlip/json-schema "0.1.2"]
 ```
 
 A Clojure library for JSON validation according to JSON Schema https://json-schema.org.
@@ -44,7 +44,7 @@ Example usage:
                                 :exclusiveMinimum 0}}
               :required [:id]}
       json "{\"id\": 0.001}"] ;; get from url, or anywhere
-  (validate json schema)
+  (validate schema json)
   (comment do whatever you only wanna do when JSON is valid)
   :success)
 ```
