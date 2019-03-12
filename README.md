@@ -14,7 +14,7 @@ It's very simple, and supports JSON Schema Draft-07.
 
 Currently this library can only be used to validate data based on a JSON Schema.
 
-It has a single public function, `validate` that return nil when no errors are found.
+It has a single public function, `validate` that return the validated data when no errors are found. This makes it very easy to incorporate validation in a pipeline (see pseudo example below).
 
 All found errors will cause the function to throw an instance of `clojure.lang.ExceptionInfo`, which can be inspected with the help of `ex-data` and the likes.
 
