@@ -2,6 +2,7 @@
   (:require [cheshire.core :as json])
   (:import [org.json JSONObject JSONArray JSONTokener]
            [org.everit.json.schema.loader SchemaLoader]
+           [org.everit.json.schema Schema]
            [org.everit.json.schema ValidationException]))
 
 (defn- ^JSONTokener prepare-tokener
@@ -26,14 +27,14 @@
              (and (string? input)
                   (#{\{ \[} (first input))))]}
   (let [json-tokener (prepare-tokener input)]
-    (condp = (first input) 
-      \[ (JSONArray. ^JSONTokener json-tokener)
+    (if (= \[ (first input)) 
+      (JSONArray. ^JSONTokener json-tokener)
       (JSONObject. ^JSONTokener json-tokener))))
 
 (defn validate
   "Validate JSON according to JSON Schema.
 
-   If validation passes without errors, returns nil.
+   If validation passes without errors, returns json.
    Throws ex-info with data on all errors.
 
    Supports draft-04 -> draft-07.
@@ -48,8 +49,14 @@
    JSON encoded string or EDN (map for both or vector for JSON)."
   [json-schema json] 
   (try
-    (.validate (prepare-schema json-schema) (prepare-json json))
+    (.validate ^Schema (prepare-schema json-schema) (prepare-json json))
+    json
     (catch ValidationException e 
-      (throw (ex-info
-              "JSON Validation error"
-              {:errors (into [] (.getAllMessages ^ValidationException e))})))))
+      (let [errors (into [] (.getAllMessages ^ValidationException e))
+            c (count errors)
+            [n s] (if (> c 1)
+                    [(format "%d " c) "s"]
+                    ["" ""])]
+        (throw (ex-info
+                (format "%sJSON Validation error%s:" n s)
+                {:errors errors}))))))

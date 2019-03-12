@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator
 
 ```clojure
-[luposlip/json-schema "0.1.2"]
+[luposlip/json-schema "0.1.3"]
 ```
 
 A Clojure library for JSON validation according to JSON Schema https://json-schema.org.
@@ -49,11 +49,27 @@ Example usage:
   :success)
 ```
 
+Pseudo-example for pipelining:
+
+```clojure
+(->> huge-seq-of-edn-or-jsonstrings
+     (map do-stuff-to-each-doc)
+     (map do-even-more-to-each)
+     (map (fn [doc]
+         (json-schema/validate
+             (-> "resources/json-schema.json"
+                 slurp
+                 (json/parse-string true))
+             doc)))
+     (lazily-save-docs-to-disk "/path/to/output-filename.ndjson")
+     (dorun))
+```
+
 More usage examples can be seen in the tests.
 
 ## Thanks
 
-Thanks to the maintainers of: https://github.com/everit-org/json-schema, on which this Clojure Library is based.
+To the maintainers of: https://github.com/everit-org/json-schema, on which this Clojure Library is based.
 
 ## License
 

@@ -2,10 +2,16 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.1.3 - 2019-03-12
+
+### Changed
+- BREAKING: valid entries return the entries instead of `nil`, also to ease pipelining
+- Error messages now show error count
+
 ## 0.1.2 - 2019-03-07
 
 ### Changed
-- BREAKING API: changed order of input to 'validate' fn to make pipelining easier
+- BREAKING: re-ordered params for `validate` fn, to ease pipelining
 
 ## 0.1.1 - 2019-03-01
 
@@ -17,6 +23,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
-[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.1...HEAD
-[0.1.1]: https://github.com/luposlip/json-schema/compare/0.1.0...0.1.1
+[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.3...HEAD
+[0.1.3]: https://github.com/luposlip/json-schema/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/luposlip/json-schema/compare/0.1.1...0.1.2
+[0.1.1]: https://github.com/luposlip/json-schema/compare/0.1.0...0.1.1
+

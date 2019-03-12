@@ -20,9 +20,9 @@
       (testing "ID has to be a number"
         (is (thrown? RuntimeException (json/validate json-schema-str "{\"id\" : \"1\"}")))) 
       (testing "Valid input as JSON string"
-        (is (nil? (json/validate json-schema-str "{\"id\": 1}")))) 
+        (let [data "{\"id\": 1}"] (is (= data (json/validate json-schema-str data))))) 
       (testing "Valid input as EDN"
-        (is (nil? (json/validate json-schema-str {:id 1})))))))
+        (let [data {:id 1}] (is (= data (json/validate json-schema-str data))))))))
 
 (deftest validate-exclusive-minimum
   (testing "Validate exclusiveMinimum (which is part of Draft-07"
@@ -35,7 +35,7 @@
           json-edn-valid {:id 0.001}
           json-edn-invalid {:id 0}] 
       (testing "valid input VALIDATES"
-        (is (nil? (json/validate json-schema-edn json-edn-valid))))      
+        (is (= json-edn-valid (json/validate json-schema-edn json-edn-valid))))      
       (testing "valid input does NOT validate"
         (is (thrown?
              clojure.lang.ExceptionInfo
@@ -62,4 +62,4 @@
               \"street_address\": \"1st Street SE\",
               \"city\": \"Washington\",
               \"state\": \"DC\"}}"] 
-      (is (nil? (json/validate schema-str json))))))
+      (is (= json (json/validate schema-str json))))))
