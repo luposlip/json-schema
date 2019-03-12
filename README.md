@@ -59,7 +59,7 @@ Pseudo-example for pipelining:
          (json-schema/validate
              (-> "resources/json-schema.json"
                  slurp
-                 (json/parse-string true))
+                 (cheshire.core/parse-string true))
              doc)))
      (lazily-save-docs-to-disk "/path/to/output-filename.ndjson")
      (dorun))
