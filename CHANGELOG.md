@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.1.4 - 2019-04-29
+
+### Changed
+- Updated Java library
+- Changed to Apache License, Version 2.0
+	
 ## 0.1.3 - 2019-03-12
 
 ### Changed
@@ -23,7 +29,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
-[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.3...HEAD
+[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.4...HEAD
+[0.1.4]: https://github.com/luposlip/json-schema/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/luposlip/json-schema/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/luposlip/json-schema/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/luposlip/json-schema/compare/0.1.0...0.1.1
