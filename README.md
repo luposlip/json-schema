@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator
 
 ```clojure
-[luposlip/json-schema "0.1.3"]
+[luposlip/json-schema "0.1.4"]
 ```
 
 A Clojure library for JSON validation according to JSON Schema https://json-schema.org.
