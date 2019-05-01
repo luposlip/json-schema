@@ -62,7 +62,7 @@ Pseudo-example for pipelining:
                  (cheshire.core/parse-string true))
              doc)))
      (lazily-save-docs-to-disk "/path/to/output-filename.ndjson")
-     (dorun))
+     dorun)
 ```
 
 More usage examples can be seen in the tests.
