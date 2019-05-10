@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.1.5 - 2019-05-10
+
+### Added
+- API to prepare json-schema for reuse when validating multiple JSON documents
+  with same schema (-> better performance)
+  
 ## 0.1.4 - 2019-04-29
 
 ### Changed
@@ -29,7 +35,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
-[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.4...HEAD
+[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.5...HEAD
+[0.1.5]: https://github.com/luposlip/json-schema/compare/0.1.4...0.1.5
 [0.1.4]: https://github.com/luposlip/json-schema/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/luposlip/json-schema/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/luposlip/json-schema/compare/0.1.1...0.1.2

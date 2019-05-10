@@ -49,20 +49,19 @@ Example usage:
   :success)
 ```
 
-Pseudo-example for pipelining:
+Pseudo-example for pipelining (note the reuse of the prepared schema):
 
 ```clojure
-(->> huge-seq-of-edn-or-jsonstrings
-     (map do-stuff-to-each-doc)
-     (map do-even-more-to-each)
-     (map (fn [doc]
-         (json-schema/validate
-             (-> "resources/json-schema.json"
-                 slurp
-                 (cheshire.core/parse-string true))
-             doc)))
+(let [schema (json-schema/schema
+                (-> "resources/json-schema.json"
+				    slurp
+					(cheshire.core/parse-string true)))]
+  (->> huge-seq-of-edn-or-jsonstrings
+       (map do-stuff-to-each-doc)
+       (map do-even-more-to-each)
+       (map (partial json-schema/validate schema))
      (lazily-save-docs-to-disk "/path/to/output-filename.ndjson")
-     dorun)
+     dorun))
 ```
 
 More usage examples can be seen in the tests.

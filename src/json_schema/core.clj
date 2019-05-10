@@ -12,26 +12,30 @@
                           input
                           (json/generate-string input))))
 
-(defn- ^JSONObject prepare-schema
-  "Prepares JSON Schema based on input string or map"
-  [input]
-  {:pre [(or (map? input)
-             (and (string? input)
-                  (= \{ (first input))))]} 
-  (SchemaLoader/load (JSONObject. (prepare-tokener input))))
-
 (defn- prepare-json
   "Prepares JSON instance based on input string, map or vector"
   [input]
-  {:pre [(or (map? input) (vector? input)
-             (and (string? input)
-                  (#{\{ \[} (first input))))]}
-  (let [json-tokener (prepare-tokener input)]
-    (if (= \[ (first input)) 
-      (JSONArray. ^JSONTokener json-tokener)
-      (JSONObject. ^JSONTokener json-tokener))))
+  (if (or (associative? input)
+          (and (string? input)
+               (#{\{ \[} (first input))))
+    (let [json-tokener (prepare-tokener input)]
+      (if (= \[ (first input)) 
+        (JSONArray. ^JSONTokener json-tokener)
+        (JSONObject. ^JSONTokener json-tokener)))
+    (throw (ex-info "Unsupported JSON input" {:input input}))))
 
-(defn validate
+(defn ^JSONObject prepare-schema
+  "Prepares JSON Schema based on input string or map"
+  [input]
+  {:pre [(or (map? input)
+             (string? input))]}
+  (if (or (map? input)
+          (and (string? input)
+               (= \{ (first input))))
+    (SchemaLoader/load (JSONObject. (prepare-tokener input)))
+    (throw (ex-info "Unsupported Schema input" {:input input}))))
+
+(defmulti validate
   "Validate JSON according to JSON Schema.
 
    If validation passes without errors, returns json.
@@ -39,17 +43,34 @@
 
    Supports draft-04 -> draft-07.
 
-   To switch draft versions,
-   simply use the according version notation in the $schema uri:
+   To switch draft versions, simply use the according version notation
+   in the $schema uri:
    http://json-schema.org/draft-04/schema
    http://json-schema.org/draft-06/schema
    http://json-schema.org/draft-07/schema
 
    JSON and JSON Schema params has to be input as either a
    JSON encoded string or EDN (map for both or vector for JSON)."
-  [json-schema json] 
+  (fn [schema _]
+    (cond (or (string? schema)
+              (associative? schema))
+          :string-or-edn
+          (instance? Schema schema)
+          :schema
+          :else :error)))
+
+(defmethod validate :string-or-edn
+  [schema json]
+  (validate (prepare-schema schema) json))
+
+(defmethod validate :error
+  [schema _]
+  (throw (ex-info "Unsupported Schema input" {:input schema})))
+
+(defmethod validate :schema
+  [schema json]
   (try
-    (.validate ^Schema (prepare-schema json-schema) (prepare-json json))
+    (.validate ^Schema schema (prepare-json json))
     json
     (catch ValidationException e 
       (let [errors (into [] (.getAllMessages ^ValidationException e))
