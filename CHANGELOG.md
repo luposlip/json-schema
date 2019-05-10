@@ -5,8 +5,8 @@ All notable changes to this project will be documented in this file. This change
 ## 0.1.5 - 2019-05-10
 
 ### Added
-- API to prepare json-schema for reuse when validating multiple JSON documents
-  with same schema (-> better performance)
+- API to prepare JSON Schema for reuse
+  (better performance when using same Schema to validate multiple JSON documents)
   
 ## 0.1.4 - 2019-04-29
 
