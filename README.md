@@ -6,13 +6,13 @@
 [luposlip/json-schema "0.1.5"]
 ```
 
-A Clojure library for JSON validation according to JSON Schema https://json-schema.org.
+A Clojure library for data validation according to JSON Schema https://json-schema.org.
 
 It's very simple, and supports JSON Schema Draft-07.
 
 ## Usage
 
-Currently this library can only be used to validate data based on a JSON Schema.
+This library can be used to validate data (EDN or JSON strings) based on a JSON Schema.
 
 It has a single public function, `validate` that return the validated data when no errors are found. This makes it very easy to incorporate validation in a pipeline (see pseudo example below).
 
