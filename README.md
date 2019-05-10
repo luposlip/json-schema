@@ -54,8 +54,8 @@ Pseudo-example for pipelining (note the reuse of the prepared schema):
 ```clojure
 (let [schema (json-schema/schema
                 (-> "resources/json-schema.json"
-				    slurp
-					(cheshire.core/parse-string true)))]
+                    slurp
+                    (cheshire.core/parse-string true)))]
   (->> huge-seq-of-edn-or-jsonstrings
        (map do-stuff-to-each-doc)
        (map do-even-more-to-each)
