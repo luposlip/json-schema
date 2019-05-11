@@ -66,6 +66,10 @@ Pseudo-example for pipelining (note the reuse of the prepared schema):
 
 More usage examples can be seen in the tests.
 
+## deps.edn
+
+If you use `tools.deps` (as opposed to Leiningen), you'll have to copy all dependencies from the Java library manually into `deps.edn`. This is due to [a bug in `tools.deps`](https://dev.clojure.org/jira/browse/TDEPS-46). Refer to [issue #1](https://github.com/luposlip/json-schema/issues/1) for more information.
+
 ## Thanks
 
 To the maintainers of: https://github.com/everit-org/json-schema, on which this Clojure Library is based.
