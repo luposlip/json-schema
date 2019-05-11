@@ -19,7 +19,8 @@
           (and (string? input)
                (#{\{ \[} (first input))))
     (let [json-tokener (prepare-tokener input)]
-      (if (= \[ (first input)) 
+      (if (or (vector? input)
+              (= \[ (first input))) 
         (JSONArray. ^JSONTokener json-tokener)
         (JSONObject. ^JSONTokener json-tokener)))
     (throw (ex-info "Unsupported JSON input" {:input input}))))

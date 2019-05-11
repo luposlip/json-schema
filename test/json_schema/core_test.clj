@@ -80,3 +80,24 @@
               \"state\": \"DC\"}}"]
       (is (= json (json/validate schema-str json))))))
 
+(deftest array-data
+  (testing "Validating EDN data where root is a vector (ref. issue #3)"
+    (let [json-schema-edn {:$schema "http://json-schema.org/draft-07/schema#"
+                           :id "https://luposlip.com/some-other-schema.json"
+                           :type "array"}
+          schema (json/prepare-schema json-schema-edn)
+          json-str-valid "[{\"some\":\"data\"}]"
+          json-edn-valid [{:some "data"}]
+          json-edn-invalid {:some "data"}]
+      
+      (testing "valid JSON string input VALIDATES"
+        (is (= json-str-valid (json/validate schema json-str-valid))))      
+
+      (testing "valid EDN input VALIDATES"
+        (is (= json-edn-valid (json/validate schema json-edn-valid))))
+
+      (testing "invalid EDN input fails"
+        (is (thrown-with-msg?
+             Exception
+             #"JSON Validation error"
+             (json/validate schema json-edn-invalid)))))))

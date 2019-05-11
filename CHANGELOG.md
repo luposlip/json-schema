@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.1.6 - 2019-05-11
+
+### Fixed
+- EDN based array (vector) in root failed validation (issue #3)
+
 ## 0.1.5 - 2019-05-10
 
 ### Added
@@ -35,7 +40,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
-[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.5...HEAD
+[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.6...HEAD
+[0.1.6]: https://github.com/luposlip/json-schema/compare/0.1.5...0.1.6
 [0.1.5]: https://github.com/luposlip/json-schema/compare/0.1.4...0.1.5
 [0.1.4]: https://github.com/luposlip/json-schema/compare/0.1.3...0.1.4
 [0.1.3]: https://github.com/luposlip/json-schema/compare/0.1.2...0.1.3
