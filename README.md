@@ -52,7 +52,7 @@ Example usage:
 Pseudo-example for pipelining (note the reuse of the prepared schema):
 
 ```clojure
-(let [schema (json-schema/schema
+(let [schema (json-schema/prepare-schema
                 (-> "resources/json-schema.json"
                     slurp
                     (cheshire.core/parse-string true)))]
