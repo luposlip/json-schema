@@ -81,4 +81,5 @@
                     ["" ""])]
         (throw (ex-info
                 (format "%sJSON Validation error%s:" n s)
-                {:errors errors}))))))
+                {:errors errors}
+                e))))))
