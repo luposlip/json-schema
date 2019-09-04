@@ -1,6 +1,7 @@
 (ns json-schema.core-test
   (:require [clojure.test :refer :all]
-            [json-schema.core :as json]))
+            [json-schema.core :as json])
+  (:import [org.everit.json.schema ValidationException]))
 
 (deftest validate-json
   (testing "Basic JSON Schema and input"
@@ -34,7 +35,20 @@
         (let [data "{\"id\": 1}"] (is (= data (json/validate schema data)))))
       
       (testing "Valid input as EDN"
-        (let [data {:id 1}] (is (= data (json/validate schema data))))))))
+        (let [data {:id 1}] (is (= data (json/validate schema data)))))
+
+      (testing "Causing ValidationException included when validation fails"
+        (let [schema {:$schema "http://json-schema.org/draft-07/schema#"
+                      :id "https://luposlip.com/some-schema.json"
+                      :type "object"
+                      :properties {:id {:type "string"}}
+                      :required [:id]}
+              ex (try
+                   (json/validate schema "{}")
+                   (catch Exception ex
+                     ex))
+              cause (.getCause ex)]
+          (is (instance? ValidationException (.getCause ex))))))))
 
 
 (deftest validate-exclusive-minimum
