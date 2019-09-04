@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.1.8 - 2019-09-04
+
+### Changed
+- Original exception included when validation fails
+
 ## 0.1.7 - 2019-08-21
 
 ### Changed
