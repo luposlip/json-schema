@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.1.9 - 2020-04-21
+
+### Changed
+- cheshire 5.9.0 -> 5.10.0
+
 ## 0.1.8 - 2019-09-04
 
 ### Changed
@@ -50,7 +55,10 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
-[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.6...HEAD
+[Unreleased]: https://github.com/luposlip/json-schema/compare/0.1.9...HEAD
+[0.1.9]: https://github.com/luposlip/json-schema/compare/0.1.8...0.1.9
+[0.1.8]: https://github.com/luposlip/json-schema/compare/0.1.7...0.1.8
+[0.1.7]: https://github.com/luposlip/json-schema/compare/0.1.6...0.1.7
 [0.1.6]: https://github.com/luposlip/json-schema/compare/0.1.5...0.1.6
 [0.1.5]: https://github.com/luposlip/json-schema/compare/0.1.4...0.1.5
 [0.1.4]: https://github.com/luposlip/json-schema/compare/0.1.3...0.1.4
