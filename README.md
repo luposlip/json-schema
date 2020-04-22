@@ -1,16 +1,20 @@
 [![CircleCI](https://circleci.com/gh/luposlip/json-schema/tree/master.svg?style=svg)](https://circleci.com/gh/luposlip/json-schema/tree/master) [![Clojars Project](https://img.shields.io/clojars/v/luposlip/json-schema.svg)](https://clojars.org/luposlip/json-schema) [![Dependencies Status](https://versions.deps.co/luposlip/json-schema/status.svg)](https://versions.deps.co/luposlip/json-schema) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Downloads](https://versions.deps.co/luposlip/json-schema/downloads.svg)](https://versions.deps.co/luposlip/json-schema)
 
-# Clojure JSON Schema Validator
+# Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.1.9"]
+[luposlip/json-schema "0.2.0"]
 ```
 
-A Clojure library for data validation according to JSON Schema https://json-schema.org.
+A Clojure library for:
+- validation of EDN or JSON data according to JSON Schema https://json-schema.org
+- generation of JSON Schemas based on EDN data
 
-It's very simple, and supports JSON Schema Draft-07.
+Supports up until JSON Schema Draft-07, for validation. Generates Draft-07 Schemas.
 
 ## Usage
+
+**TODO** ADD INFO ON GENERATION!!
 
 This library can be used to validate data (EDN or JSON strings) based on a JSON Schema.
 
@@ -76,7 +80,7 @@ To the maintainers of: https://github.com/everit-org/json-schema, on which this 
 
 ## Copyright & License
 
-Copyright (C) 2019 Henrik Mohr
+Copyright (C) 2020 Henrik Mohr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

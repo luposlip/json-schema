@@ -1,5 +1,5 @@
-(defproject luposlip/json-schema "0.1.9"
-  :description "Clojure library for validating via JSON Schema - Draft-07 compatible"
+(defproject luposlip/json-schema "0.2.0"
+  :description "Clojure library for JSON Schema validation and generating - Draft-07 compatible"
   :url "https://github.com/luposlip/json-schema"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
