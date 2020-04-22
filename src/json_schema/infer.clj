@@ -2,7 +2,7 @@
   (:require [clojure.core.reducers :as r]
             [cheshire.core :as json]))
 
-(defn init-schema [{:keys [schema-name uri description]}]
+(defn- init-schema [{:keys [schema-name uri description]}]
   (merge {:$schema "http://json-schema.org/draft-07/schema#"
           :title schema-name}
          (when (string? uri) {:uri uri})
@@ -35,7 +35,7 @@
                                  :items (trampoline infer-strict (first data))})
           :else (merge sch (data-type data)))))
 
-(defn data-type
+(defn- data-type
   "Return af JSON Schema type map based on input"
   [data]
   (cond
