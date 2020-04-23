@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## [Unreleased]
+
+### Added
+
+- infer JSON Schema based on EDN data
+
 ## 0.1.9 - 2020-04-21
 
 ### Changed
