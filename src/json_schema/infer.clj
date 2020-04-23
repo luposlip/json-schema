@@ -10,8 +10,15 @@
 
 (declare data-type)
 
+(defn sanitize-key [k]
+  (if (or (keyword? k) (symbol? k))
+    (name k)
+    (str k)))
+
 (defn infer-strict
-  "Naive schema inference from associative data
+  "Naive but strict schema inference from associative data.
+   Strict in the sense that everything is required, and nothing
+   else is allowed.
   
    Optional params:
    - schema-name - translates to schema title
@@ -26,10 +33,11 @@
               (init-schema params)
               (or schema {}))]
     (cond (map? data) (merge sch
-                             {:type :object
-                              :additionalProperties false
-                              :properties (zipmap (keys data) (mapv (comp data-type second) data))
-                              :required (vec (keys data))})
+                             (let [sks (map sanitize-key (keys data))]
+                               {:type :object
+                                :additionalProperties false
+                                :properties (zipmap sks (mapv (comp data-type second) data))
+                                :required (vec sks)}))
           (vector? data) (merge sch
                                 {:type :array
                                  :items (trampoline infer-strict (first data))})
@@ -42,6 +50,9 @@
     (integer? data) {:type :integer}
     (number? data) {:type :number}
     (string? data) {:type :string}
+    (inst? data) {:type :string
+                  :minLength 20
+                  :maxLength 20}
     (associative? data) (trampoline infer-strict data)
     :else (throw (ex-info "Not yet supporting data-type" {:data data}))))
 
