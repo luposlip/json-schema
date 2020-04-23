@@ -74,12 +74,6 @@ The generation of JSON Schemas is pretty naive, but should work in many scenario
 
 Currently only strict Schema generation is possible. This means that all found keys are set as required, and no other keys are allowed.
 
-Furthermore only 1 input sample is used to generate the Schema. In a future release the generation will allow a list of sample documents, and allow for automatically correct setting `required` to either true or false.
-
-Also a future release will allow for a configuration map, setting minimum and maximum values for numbers, length constraints for strings etc.
-
-Note that in Clojure any data is allowed as key in a map. This is not the case in JSON, where any key needs to be a string. Because of that all non-string keys are converted to strings in the JSON schema. Clojure data with other types of keys will still validate based on the generated schema.
-
 To generate a schema:
 
 ```clojure
@@ -108,11 +102,19 @@ There's a helper function generating the Schema directly to a JSON string:
 ```clojure
 (json-schema.infer/infer-strict->json
     {:thing {:quantities [1.3 2.2 3.1]}}
-	{:schema-name "ent-1"})
+    {:schema-name "ent-1"})
 ```
 
 More usage examples can be found in the tests.
 
+NB: In Clojure any data is allowed as key in a map. This is not the case in JSON, where keys can only be string. Because of that all non-string keys are converted to strings in the generated JSON schema. Clojure data with other types of keys will still validate based on the generated schema.
+
+
+### Future
+
+Only a single input sample is currently used to generate the Schema. In a future release the generation will allow a list of sample documents, and use their potential differences to infer the value of certain Schema property attributes. In example automatically setting `required` to either `true` or `false`.
+
+Also a future release will allow for a configuration map, setting property attributes such as minimum and maximum values for numbers, length constraints for strings etc.
 
 ## deps.edn
 
@@ -120,7 +122,7 @@ If you use `tools.deps` (as opposed to Leiningen), you'll have to copy all depen
 
 ## Thanks
 
-To the maintainers of: https://github.com/everit-org/json-schema, on which this Clojure Library is based.
+To the maintainers of: https://github.com/everit-org/json-schema, on which _validation_ in this Clojure Library is based.
 
 ## Copyright & License
 
