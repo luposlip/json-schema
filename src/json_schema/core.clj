@@ -51,8 +51,11 @@
    http://json-schema.org/draft-07/schema
 
    JSON and JSON Schema params has to be input as either a
-   JSON encoded string or EDN (map for both or vector for JSON)."
-  (fn [schema _]
+   JSON encoded string or EDN (map for both or vector for JSON).
+
+   You can pass optional parameter :include-original-exception, in
+   case you want the underlying exception to bubble up."
+  (fn [schema _ & params]
     (cond (or (string? schema)
               (associative? schema))
           :string-or-edn
@@ -61,25 +64,27 @@
           :else :error)))
 
 (defmethod validate :string-or-edn
-  [schema json]
-  (validate (prepare-schema schema) json))
+  [schema json & params]
+  (apply (partial validate (prepare-schema schema) json) params))
 
 (defmethod validate :error
-  [schema _]
-  (throw (ex-info "Unsupported Schema input" {:input schema})))
+  [schema _ & params]
+  (throw (ex-info "Unsupported Schema input" {:input schema
+                                              :params params})))
 
 (defmethod validate :schema
-  [schema json]
-  (try
-    (.validate ^Schema schema (prepare-json json))
-    json
-    (catch ValidationException e 
-      (let [errors (into [] (.getAllMessages ^ValidationException e))
-            c (count errors)
-            [n s] (if (> c 1)
-                    [(format "%d " c) "s"]
-                    ["" ""])]
-        (throw (ex-info
-                (format "%sJSON Validation error%s:" n s)
-                {:errors errors}
-                e))))))
+  [schema json & params]
+  (let [params (set params)]
+    (try
+      (.validate ^Schema schema (prepare-json json))
+      json
+      (catch ValidationException e 
+        (let [errors (into [] (.getAllMessages ^ValidationException e))
+              c (count errors)
+              [n s] (if (> c 1)
+                      [(format "%d " c) "s"]
+                      ["" ""])]
+          (throw (ex-info
+                  (format "%sJSON Validation error%s:" n s)
+                  {:errors errors}
+                  (when (params :include-original-exception) e))))))))

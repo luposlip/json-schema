@@ -1,7 +1,8 @@
 (ns json-schema.core-test
   (:require [clojure.test :refer :all]
             [json-schema.core :as json])
-  (:import [org.everit.json.schema ValidationException]))
+  (:import [org.everit.json.schema ValidationException]
+           clojure.lang.ExceptionInfo))
 
 (deftest validate-json
   (testing "Basic JSON Schema and input"
@@ -44,11 +45,22 @@
                       :properties {:id {:type "string"}}
                       :required [:id]}
               ex (try
+                   (json/validate schema "{}" :include-original-exception)
+                   (catch Throwable ex
+                     ex))]
+          (is (instance? ValidationException (.getCause ex)))))
+
+      (testing "Causing ExceptionInfo when validation fails"
+        (let [schema {:$schema "http://json-schema.org/draft-07/schema#"
+                      :id "https://luposlip.com/some-schema.json"
+                      :type "object"
+                      :properties {:id {:type "string"}}
+                      :required [:id]}
+              ex (try
                    (json/validate schema "{}")
-                   (catch Exception ex
-                     ex))
-              cause (.getCause ex)]
-          (is (instance? ValidationException (.getCause ex))))))))
+                   (catch Throwable ex
+                     ex))]
+          (is (instance? ExceptionInfo ex)))))))
 
 
 (deftest validate-exclusive-minimum

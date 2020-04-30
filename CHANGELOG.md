@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.1 - 2020-04-30
+
+- Optional parameter to include original validation exception: :include-original-exception
+
 ## 0.2.0 - 2020-04-23
 
 ### Added
@@ -61,6 +65,7 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.1]: https://github.com/luposlip/json-schema/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/luposlip/json-schema/compare/0.1.9...0.2.0
 [0.1.9]: https://github.com/luposlip/json-schema/compare/0.1.8...0.1.9
 [0.1.8]: https://github.com/luposlip/json-schema/compare/0.1.7...0.1.8
