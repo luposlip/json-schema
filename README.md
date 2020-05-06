@@ -12,9 +12,6 @@ A Clojure library for:
 
 Supports up until JSON Schema Draft-07, for validation. Generates Draft-07 Schemas.
 
-NB: Generation of schema works fine, but the API will probably change due to early stage.
-
-
 ## Usage: Validation
 
 This library can be used to validate data (EDN or JSON strings) based on a JSON Schema.
@@ -75,13 +72,14 @@ More usage examples can be seen in the tests.
 
 The generation of JSON Schemas is pretty naive, but should work in many scenarios. The generated JSON Schemas doesn't use definitions, pointers or references, but is instead nested.
 
-Currently only strict Schema generation is possible. This means that all found keys are set as required, and no other keys are allowed.
+Schema generation is strict possible. This means that all found keys are set as required, and no other keys are allowed. But it's possible to add a `:optional` set of keys, which will be treated as non-required.
+
+Please note that the optionality will be schema wise, so keys used in different places in the structure having the same name will be treated the same! This will (probably) change in future releases, so you can supply a set keys for global optionality, or path vectors for specificity. A combination with wildcard paths could also be possible in a future release.
 
 To generate a schema:
 
 ```clojure
 (json-schema.infer/infer-strict
-    {}
     {:things [{:quantity 1}]}
     {:title "ent-1"})
 ```
@@ -101,11 +99,20 @@ This will generate the following schema:
           :required ["things"]}
 ```
 
+Optionality is set like this:
+
+```clojure
+(json-schema.infer/infer-strict
+    {:things [{:quantity 1}]
+	 :meta 123}
+    {:title "ent-1"
+     :optional #{:meta}})
+```
+
 There's a helper function generating the Schema directly to a JSON string:
 
 ```clojure
 (json-schema.infer/infer-strict->json
-    {}
 	{:thing {:quantities [1.3 2.2 3.1]}}
     {:title "ent-1"})
 ```
