@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.3 - 2020-05-06
+
+### Fixed
+- removed `println`s
+
 ## 0.2.2 - 2020-05-06
 
 ### Changed
@@ -73,6 +78,7 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.3]: https://github.com/luposlip/json-schema/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/luposlip/json-schema/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/luposlip/json-schema/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/luposlip/json-schema/compare/0.1.9...0.2.0
