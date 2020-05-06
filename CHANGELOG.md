@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.2 - 2020-05-06
+
+### Changed
+- API to infer schema has been changed! Check README and `infer_test.clj`
+  - schema-name -> title
+- Added `optional` parameter, for keys that should NOT be required by schema
+  - This doesn't support paths/nesting, only simple keys. Hence a key marked as optional will be optional everywhere in the schema
+
 ## 0.2.1 - 2020-04-30
 
 - Optional parameter to include original validation exception: :include-original-exception
@@ -65,6 +73,7 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.2]: https://github.com/luposlip/json-schema/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/luposlip/json-schema/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/luposlip/json-schema/compare/0.1.9...0.2.0
 [0.1.9]: https://github.com/luposlip/json-schema/compare/0.1.8...0.1.9

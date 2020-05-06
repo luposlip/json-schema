@@ -1,10 +1,9 @@
 (ns json-schema.infer
-  (:require [clojure.core.reducers :as r]
-            [cheshire.core :as json]))
+  (:require [cheshire.core :as json]))
 
-(defn- init-schema [{:keys [schema-name uri description]}]
+(defn- init-schema [{:keys [title uri description]}]
   (merge {:$schema "http://json-schema.org/draft-07/schema#"
-          :title schema-name}
+          :title title}
          (when (string? uri) {:uri uri})
          (when (string? description) {:description description})))
 
@@ -19,44 +18,64 @@
   "Naive but strict schema inference from associative data.
    Strict in the sense that everything is required, and nothing
    else is allowed.
+
+   Params:
+     optional    - keys that shouldn't be required
   
    Optional params:
-   - schema-name - translates to schema title
-   - uri - uri for the schema
-   - description -  description for the schema
-   - schema - if you already started on a schema def
-   - type-meta - extra meta data for properties (WIP!)"
-  [data & [{:keys [schema-name schema uri description type-meta] :as params}]]
-  {:pre [(or (associative? data)
-             (or (nil? schema-name) (string? schema-name)))]}
-  (let [sch (if schema-name
-              (init-schema params)
+     title       - schema title
+     description - schema description
+     uri         - schema uri
+     schema      - continue building on schema"
+  [{:keys [optional] :as params} data & [{:keys [title schema] :as init-params}]]
+  {:pre [(and
+          (or (associative? data)
+              (or (nil? title) (string? title)))
+          (or (nil? optional) (set? optional)))]}
+  (let [sch (if (and title (not schema))
+              (init-schema init-params)
               (or schema {}))]
     (cond (map? data) (merge sch
-                             (let [sks (map sanitize-key (keys data))]
-                               {:type :object
-                                :additionalProperties false
-                                :properties (zipmap sks (mapv (comp data-type second) data))
-                                :required (vec sks)}))
+                             (let [sks (map sanitize-key (keys data))
+                                   d {:type :object
+                                      :additionalProperties false
+                                      :properties (zipmap sks (mapv (comp (partial infer-strict params) second) data))
+                                      :required (vec (if optional
+                                                       (map sanitize-key (remove optional (keys data)))
+                                                       sks))}]
+                               (println 'optional optional)
+                               (println 'sks sks)
+                               (println 'required (vec (if optional
+                                                         (remove optional sks)
+                                                         sks)))
+                               d
+                               ))
           (vector? data) (merge sch
                                 {:type :array
-                                 :items (trampoline infer-strict (first data))})
-          :else (merge sch (data-type data)))))
+                                 :items (trampoline (partial infer-strict params) (first data))})
+          :else (merge sch (data-type (partial infer-strict params) data)))))
 
 (defn- data-type
   "Return af JSON Schema type map based on input"
-  [data]
+  [recur-fn data]
   (cond
     (integer? data) {:type :integer}
     (number? data) {:type :number}
     (string? data) {:type :string}
+    (boolean? data) {:type :boolean}
     (inst? data) {:type :string
                   :minLength 20
                   :maxLength 20}
-    (associative? data) (trampoline infer-strict data)
+    (associative? data) (trampoline recur-fn data)
     :else (throw (ex-info "Not yet supporting data-type" {:data data}))))
 
-(defn infer-strict->json
+(defn infer->json
   "A helper function that returns inferred schema as JSON"
+  [params data & [init-params]]
+  (-> (infer-strict params data init-params) json/encode))
+
+(defn ^:deprecated infer-strict->json
+  "Use infer->schema instead"
   [data params]
-  (-> data (infer-strict params) json/encode))
+  (infer->json params data {}))
+

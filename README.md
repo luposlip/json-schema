@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.2.1"]
+[luposlip/json-schema "0.2.2"]
 ```
 
 A Clojure library for:
@@ -11,6 +11,9 @@ A Clojure library for:
 - generation of JSON Schemas based on EDN data
 
 Supports up until JSON Schema Draft-07, for validation. Generates Draft-07 Schemas.
+
+NB: Generation of schema works fine, but the API will probably change due to early stage.
+
 
 ## Usage: Validation
 
@@ -78,8 +81,9 @@ To generate a schema:
 
 ```clojure
 (json-schema.infer/infer-strict
+    {}
     {:things [{:quantity 1}]}
-    {:schema-name "ent-1"})
+    {:title "ent-1"})
 ```
 
 This will generate the following schema:
@@ -101,8 +105,9 @@ There's a helper function generating the Schema directly to a JSON string:
 
 ```clojure
 (json-schema.infer/infer-strict->json
-    {:thing {:quantities [1.3 2.2 3.1]}}
-    {:schema-name "ent-1"})
+    {}
+	{:thing {:quantities [1.3 2.2 3.1]}}
+    {:title "ent-1"})
 ```
 
 More usage examples can be found in the tests.
