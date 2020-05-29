@@ -39,13 +39,21 @@
                              (let [sks (map sanitize-key (keys data))]
                                {:type :object
                                 :additionalProperties false
-                                :properties (zipmap sks (mapv (comp (partial infer-strict (dissoc params :title :description :uri)) second) data))
+                                :properties (zipmap sks
+                                                    (mapv
+                                                     (comp (partial infer-strict
+                                                                    (dissoc params :title :description :uri))
+                                                           second)
+                                                     data))
                                 :required (vec (if optional
                                                  (map sanitize-key (remove optional (keys data)))
                                                  sks))}))
           (vector? data) (merge sch
                                 {:type :array
-                                 :items (trampoline (partial infer-strict (dissoc params :title :description :uri)) (first data))})
+                                 :items (trampoline
+                                         (partial infer-strict
+                                                  (dissoc params :title :description :uri))
+                                         (first data))})
           :else (merge sch (data-type (partial infer-strict (dissoc params :title :description :uri)) data)))))
 
 (defn- data-type
