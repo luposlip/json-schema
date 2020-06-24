@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.2.5"]
+[luposlip/json-schema "0.2.6"]
 ```
 
 A Clojure library for:
@@ -118,6 +118,19 @@ or if you have multiple documents pre-ordered in a sequence:
     [{:things [{:quantity 1}]}
 	 {:things [{:quantity 1
                 :limit 2}]}])
+```
+
+If you want optionality by allowing null values, this is the way:
+
+```clojure
+(json-schema.infer/infer
+    {:title "ent-1"
+     :nullable true}
+    {:things [{:quantity 1}]
+     :meta {:foo "bar}}
+    {:things [{:quantity 1
+               :limit 2}]
+     :meta nil})
 ```
 
 **Explicit optionality** is set like this:

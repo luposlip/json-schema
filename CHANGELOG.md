@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.6 - 2020-06-24
+
+### Added
+- Optionality by nullability when inferring schemas
+
 ## 0.2.5 - 2020-06-24
 
 ### Added
@@ -91,6 +96,7 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.6]: https://github.com/luposlip/json-schema/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/luposlip/json-schema/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/luposlip/json-schema/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/luposlip/json-schema/compare/0.2.2...0.2.3

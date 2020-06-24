@@ -174,3 +174,16 @@
                    (v/validate schema
                                (assoc (second data)
                                       :quantity 0)))))))
+
+(deftest implicit-optionality-by-nullability
+  (let [data [{:foo {:bar "baz"}}
+              {:foo nil}]
+        schema (apply (partial t/infer {:title "ent-1"
+                                        :nullable true})
+                      data)]
+    (is (= (first data) (v/validate schema (first data))))
+    (is (= (second data) (v/validate schema (second data))))
+    (is (thrown? ExceptionInfo
+                 (v/validate schema
+                             (assoc (second data) ;; not allowed to change type
+                                    :foo [{:bar "baz"}]))))))

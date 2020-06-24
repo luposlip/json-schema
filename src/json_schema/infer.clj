@@ -65,8 +65,18 @@
     data))
 
 (defn- assoc-in-from-either [data path d1 d2]
-  (assoc-in data path
-            (get-in d1 path (get-in d2 path))))
+  (let [type? (> (count path) 1)
+        update-type (fn [data]
+                      (if type?
+                        (let [type-path (conj path :type)]
+                          (assoc-in data
+                                    type-path
+                                    (into (get-in d1 type-path #{:null})
+                                          (get-in d2 type-path #{:null}))))
+                        data))]
+    (-> data
+        (assoc-in path (get-in d1 path (get-in d2 path)))
+        update-type)))
 
 (declare infer) ;; bc/o mutual recursion
 
@@ -93,7 +103,7 @@
               (or schema {}))]
     (cond (map? data) (merge sch
                              (let [sks (map sanitize-key (keys data))]
-                               {:type :object
+                               {:type #{:object}
                                 :additionalProperties false
                                 :properties (zipmap sks
                                                     (mapv
@@ -105,13 +115,17 @@
                                                  (map sanitize-key (remove optional (keys data)))
                                                  sks))}))
           (vector? data) (merge sch
-                                {:type :array
+                                {:type #{:array}
                                  :items (trampoline
                                          apply
                                          (partial infer
                                                   (dissoc params :title :description :uri))
                                          data)})
-          :else (merge sch (data-type (partial infer-strict (dissoc params :title :description :uri)) data)))))
+          :else (merge sch
+                       (data-type
+                        (assoc params
+                               :recur-fn (partial infer-strict
+                                                  (dissoc params :title :description :uri))) data)))))
 
 (defn infer
   "Schema inference from multiple documents of associative data.
@@ -155,20 +169,22 @@
 
 (defn- data-type
   "Return af JSON Schema type map based on input"
-  [recur-fn data]
+  [{:keys [recur-fn nullable] :as params} data]
   (cond
-    (integer? data) {:type :integer}
-    (number? data) {:type :number}
-    (string? data) {:type :string}
-    (boolean? data) {:type :boolean}
-    (inst? data) {:type :string
+    (integer? data) {:type #{:integer}}
+    (number? data) {:type #{:number}}
+    (string? data) {:type #{:string}}
+    (boolean? data) {:type #{:boolean}}
+    (inst? data) {:type #{:string}
                   :minLength 20
                   :maxLength 20}
     (associative? data) (trampoline recur-fn data)
-    :else (throw (ex-info "Not yet supporting data-type" {:data data}))))
+    (and (nil? data) nullable) {:type #{:null}}
+    :else (throw (ex-info "Not yet supporting data-type" {:data data
+                                                          :params params}))))
 
 (defn infer->json
   "A helper function that returns inferred schema as JSON"
   [params data]
-  (-> (infer-strict params data) json/encode))
+  (->> data (infer-strict params) json/encode))
 
