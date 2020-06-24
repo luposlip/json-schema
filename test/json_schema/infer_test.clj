@@ -11,7 +11,7 @@
           :type :object
           :additionalProperties false
           :properties {"thing" {:type :integer}}
-          :required ["thing"]}
+          :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing 1})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
@@ -21,8 +21,8 @@
           :properties {"thing" {:type :object
                                 :additionalProperties false
                                 :properties {"quantity" {:type :integer}}
-                                :required ["quantity"]}}
-          :required ["thing"]}
+                                :required #{"quantity"}}}
+          :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity 1}})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
@@ -32,8 +32,8 @@
           :properties {"thing" {:type :object
                                 :additionalProperties false
                                 :properties {"quantity" {:type :number}}
-                                :required ["quantity"]}}
-          :required ["thing"]}
+                                :required #{"quantity"}}}
+          :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity 1.1}})))
   
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
@@ -43,8 +43,8 @@
           :properties {"thing" {:type :object
                                 :additionalProperties false
                                 :properties {"quantity" {:type :string}}
-                                :required ["quantity"]}}
-          :required ["thing"]}
+                                :required #{"quantity"}}}
+          :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity "11.111,11"}})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
@@ -55,8 +55,8 @@
                                  :items {:type :object
                                          :additionalProperties false
                                          :properties {"quantity" {:type :integer}}
-                                         :required ["quantity"]}}}
-          :required ["things"]}
+                                         :required #{"quantity"}}}}
+          :required #{"things"}}
          (t/infer-strict {:title "ent-1"} {:things [{:quantity 1} {:quantity 2}]})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
@@ -67,8 +67,8 @@
                                 :additionalProperties false
                                 :properties {"quantities" {:type :array
                                                            :items {:type :number}}}
-                                :required ["quantities"]}}
-          :required ["thing"]}
+                                :required #{"quantities"}}}
+          :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantities [1.3 2.2 3.1]}}))))
 
 (deftest infer-array
@@ -98,7 +98,7 @@
           {:type :object,
            :additionalProperties false,
            :properties {"quantity" {:type :integer}},
-           :required ["quantity"]}}
+           :required #{"quantity"}}}
          (t/infer-strict {:title "ent-1"} [{:quantity 1}]))))
 
 (deftest infer-strict->json
@@ -115,7 +115,7 @@
         schema (t/infer-strict {:title "ent-1"} data)]
     (is (= data (v/validate schema data)))))
 
-(deftest infer-non-strict
+(deftest infer-strict-optional
   (let [data {:things [{:quantity 1} {:quantity 2}]
               :yearly {2020 1
                        2021 2
@@ -129,4 +129,48 @@
                                data)]
     (is (= data (v/validate schema data)))
     (is (= (dissoc data :meta) (v/validate schema (dissoc data :meta))))
-    (is (thrown? ExceptionInfo data (v/validate schema (assoc data :meta2 {:this "is" :not "allowed"}))))))
+    (is (thrown? ExceptionInfo (v/validate schema (assoc data :meta2 {:this "is" :not "allowed"}))))))
+
+(deftest infer-multiple
+
+  (testing "implicit root key optionality by samples"
+    (let [data [{:things [{:quantity 1} {:quantity 2}]
+                 :meta {:this "is"
+                        :optional? "yesyes"}}
+                {:things [{:quantity 1} {:quantity 2}]}]
+          schema (apply (partial t/infer {:title "ent-1"}) data)]
+      (is (= (first data) (v/validate schema (first data))))
+      (is (= (second data) (v/validate schema (second data))))
+      (is (thrown? ExceptionInfo (v/validate schema (assoc (second data) :foo [{:bar "baz"}]))))))
+
+  (testing "implicit child key optionality by samples"
+    (let [data [{:things [{:quantity 1} {:quantity 2}]
+                 :meta {:this "is"
+                        :optional? "yesyes"}}
+                {:things [{:quantity 1}
+                          {:quantity 2 :limit 3}]}]
+          schema (apply (partial t/infer {:title "ent-1"}) data)]
+      (is (= (first data) (v/validate schema (first data))))
+      (is (= (second data) (v/validate schema (second data))))
+      (is (thrown? ExceptionInfo
+                   (v/validate schema (assoc (second data) :foo {:bar "baz"}))))
+      (is (thrown? ExceptionInfo
+                   (v/validate schema {:things [{:quantity 1}
+                                                {:quantity 2 :limits 3}]})))))
+
+  (testing "explicit optionality in child structure"
+    (let [data [{:things [{:quantity 1} {:quantity 2}]
+                 :meta {:this "is"
+                        :optional? "yesyes"}}
+                {:things [{:quantity 1}
+                          {:quantity 2 :limit 3}]}]
+          schema (apply (partial t/infer {:title "ent-1"
+                                          :optional #{:quantity}}) data)]
+      (is (= (first data) (v/validate schema (first data))))
+      (is (= (second data) (v/validate schema (second data))))
+      (is (= {:things [{:quantity 1} {:limit 3}]}
+             (v/validate schema {:things [{:quantity 1} {:limit 3}]})))
+      (is (thrown? ExceptionInfo
+                   (v/validate schema
+                               (assoc (second data)
+                                      :quantity 0)))))))

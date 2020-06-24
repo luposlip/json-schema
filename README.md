@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.2.4"]
+[luposlip/json-schema "0.2.5"]
 ```
 
 A Clojure library for:
@@ -80,8 +80,8 @@ To generate a schema:
 
 ```clojure
 (json-schema.infer/infer-strict
-    {:things [{:quantity 1}]}
     {:title "ent-1"})
+    {:things [{:quantity 1}]})
 ```
 
 This will generate the following schema:
@@ -99,22 +99,43 @@ This will generate the following schema:
           :required ["things"]}
 ```
 
-Optionality is set like this:
+**Implicit optionality** is supported by passing in multiple documents to `infer`:
+
+```clojure
+(json-schema.infer/infer
+    {:title "ent-1"
+     :optional #{:meta}}
+    {:things [{:quantity 1}]}
+	{:things [{:quantity 1
+               :limit 2}]})
+```
+
+or if you have multiple documents pre-ordered in a sequence:
+
+```clojure
+(apply
+    (partial json-schema.infer/infer {:title "ent-1"})
+    [{:things [{:quantity 1}]}
+	 {:things [{:quantity 1
+                :limit 2}]}])
+```
+
+**Explicit optionality** is set like this:
 
 ```clojure
 (json-schema.infer/infer-strict
-    {:things [{:quantity 1}]
-	 :meta 123}
     {:title "ent-1"
-     :optional #{:meta}})
+     :optional #{:meta}}
+    {:things [{:quantity 1}]
+     :meta 123})
 ```
 
 There's a helper function generating the Schema directly to a JSON string:
 
 ```clojure
-(json-schema.infer/infer-strict->json
-	{:thing {:quantities [1.3 2.2 3.1]}}
-    {:title "ent-1"})
+(json-schema.infer/infer->json
+    {:title "ent-1"}
+	{:thing {:quantities [1.3 2.2 3.1]}})
 ```
 
 More usage examples can be found in the tests.

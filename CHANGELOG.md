@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.5 - 2020-06-24
+
+### Added
+- Schemas can now be inferred on multiple input documents, thus supporting implicit optionality (while still supporting the explicit optionality from version 0.2.2).
+
+### Removed
+- deprecated `infer-strict->json`
+
 ## 0.2.4 - 2020-05-29
 
 ### Changed
@@ -83,6 +91,7 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.5]: https://github.com/luposlip/json-schema/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/luposlip/json-schema/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/luposlip/json-schema/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/luposlip/json-schema/compare/0.2.1...0.2.2
