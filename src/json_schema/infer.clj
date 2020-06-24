@@ -66,13 +66,17 @@
 
 (defn- assoc-in-from-either [data path d1 d2]
   (let [type? (> (count path) 1)
+        ignore-one? (some empty? [d1 d2])
         update-type (fn [data]
                       (if type?
                         (let [type-path (conj path :type)]
-                          (assoc-in data
-                                    type-path
-                                    (into (get-in d1 type-path #{:null})
-                                          (get-in d2 type-path #{:null}))))
+                          (assoc-in data type-path
+                                    (if ignore-one?
+                                      (-> (remove empty? [d1 d2])
+                                          first
+                                          (get-in type-path))
+                                      (into (get-in d1 type-path #{:null})
+                                            (get-in d2 type-path #{:null})))))
                         data))]
     (-> data
         (assoc-in path (get-in d1 path (get-in d2 path)))

@@ -8,65 +8,65 @@
   
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
           :title "ent-1" 
-          :type :object
+          :type #{:object}
           :additionalProperties false
-          :properties {"thing" {:type :integer}}
+          :properties {"thing" {:type #{:integer}}}
           :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing 1})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
           :title "ent-1" 
-          :type :object
+          :type #{:object}
           :additionalProperties false
-          :properties {"thing" {:type :object
+          :properties {"thing" {:type #{:object}
                                 :additionalProperties false
-                                :properties {"quantity" {:type :integer}}
+                                :properties {"quantity" {:type #{:integer}}}
                                 :required #{"quantity"}}}
           :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity 1}})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
           :title "ent-1" 
-          :type :object
+          :type #{:object}
           :additionalProperties false
-          :properties {"thing" {:type :object
+          :properties {"thing" {:type #{:object}
                                 :additionalProperties false
-                                :properties {"quantity" {:type :number}}
+                                :properties {"quantity" {:type #{:number}}}
                                 :required #{"quantity"}}}
           :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity 1.1}})))
   
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
           :title "ent-1" 
-          :type :object
+          :type #{:object}
           :additionalProperties false
-          :properties {"thing" {:type :object
+          :properties {"thing" {:type #{:object}
                                 :additionalProperties false
-                                :properties {"quantity" {:type :string}}
+                                :properties {"quantity" {:type #{:string}}}
                                 :required #{"quantity"}}}
           :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity "11.111,11"}})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
           :title "ent-1" 
-          :type :object
+          :type #{:object}
           :additionalProperties false
-          :properties {"things" {:type :array
-                                 :items {:type :object
+          :properties {"things" {:type #{:array}
+                                 :items {:type #{:object}
                                          :additionalProperties false
-                                         :properties {"quantity" {:type :integer}}
+                                         :properties {"quantity" {:type #{:integer}}}
                                          :required #{"quantity"}}}}
           :required #{"things"}}
          (t/infer-strict {:title "ent-1"} {:things [{:quantity 1} {:quantity 2}]})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
           :title "ent-1" 
-          :type :object
+          :type #{:object}
           :additionalProperties false
-          :properties {"thing" {:type :object
+          :properties {"thing" {:type #{:object}
                                 :additionalProperties false
-                                :properties {"quantities" {:type :array
-                                                           :items {:type :number}}}
+                                :properties {"quantities" {:type #{:array}
+                                                           :items {:type #{:number}}}}
                                 :required #{"quantities"}}}
           :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantities [1.3 2.2 3.1]}}))))
@@ -75,34 +75,34 @@
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#",
           :title "ent-1"
-          :type :array
-          :items {:type :integer}}
+          :type #{:array}
+          :items {:type #{:integer}}}
          (t/infer-strict {:title "ent-1"} [1])))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#",
           :title "ent-1"
-          :type :array
-          :items {:type :number}}
+          :type #{:array}
+          :items {:type #{:number}}}
          (t/infer-strict {:title "ent-1"} [1.2])))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#",
           :title "ent-1"
-          :type :array
-          :items {:type :string}}
+          :type #{:array}
+          :items {:type #{:string}}}
          (t/infer-strict {:title "ent-1"} ["hej"])))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#",	  
           :title "ent-1",
-          :type :array,
+          :type #{:array},
           :items
-          {:type :object,
+          {:type #{:object},
            :additionalProperties false,
-           :properties {"quantity" {:type :integer}},
+           :properties {"quantity" {:type #{:integer}}},
            :required #{"quantity"}}}
          (t/infer-strict {:title "ent-1"} [{:quantity 1}]))))
 
 (deftest infer-strict->json
-  (is (= "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"title\":\"ent-1\",\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"thing\":{\"type\":\"object\",\"additionalProperties\":false,\"properties\":{\"quantities\":{\"type\":\"array\",\"items\":{\"type\":\"number\"}}},\"required\":[\"quantities\"]}},\"required\":[\"thing\"]}"
+  (is (= "{\"$schema\":\"http://json-schema.org/draft-07/schema#\",\"title\":\"ent-1\",\"type\":[\"object\"],\"additionalProperties\":false,\"properties\":{\"thing\":{\"type\":[\"object\"],\"additionalProperties\":false,\"properties\":{\"quantities\":{\"type\":[\"array\"],\"items\":{\"type\":[\"number\"]}}},\"required\":[\"quantities\"]}},\"required\":[\"thing\"]}"
          (t/infer->json {:title "ent-1"} {:thing {:quantities [1.3 2.2 3.1]}}))))
 
 (deftest infer-and-validate
