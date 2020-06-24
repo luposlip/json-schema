@@ -189,30 +189,30 @@
                                     :foo [{:bar "baz"}]))))))
 
 (deftest implicit-optionality-many-siblings
-  (let [d [{:kategori "Ejendom",
-            :kode "100",
-            :overskrift "Ejendomsværdi skal fastsættes"}
-           {:kategori "Grundværdi",
-            :kode "200",
-            :overskrift "Grundværdi skal ansættes"}
-           {:begrundelse "Fritagelse for grundskyld efter § 7.",
-            :deklarationsmeddelelse "DM fuld fritagelse",
-            :kategori "Grundværdi",
-            :kode "211",
-            :lovhenvisning "EVL 13, stk. 2 og KESL § 7",
-            :overskrift "Grundværdi skal ikke beskattes",
-            :vurderingsmeddelelse "VM fuld fritagelse"}]
+  (let [d [{:cat "Something",
+            :code "1",
+            :headline "Something"}
+           {:cat "More something",
+            :code "2",
+            :headline "Yes my boys"}
+           {:cause "Just cause",
+            :msg-1 "Message 1",
+            :cat "Caterpillar",
+            :code "3",
+            :rule "nifty rule",
+            :headline "None for now",
+            :msg-2 "Message 2"}]
         schema (apply (partial t/infer {:title "ent-1" :nullable true}) d)]
-    (is (= {:required #{"kategori" "kode" "overskrift"},
+    (is (= {:required #{"cat" "code" "headline"},
             :additionalProperties false,
             :properties
-            {"kategori" {:type #{:string}},
-             "kode" {:type #{:string}},
-             "overskrift" {:type #{:string}},
-             "lovhenvisning" {:type #{:string :null}},
-             "vurderingsmeddelelse" {:type #{:string :null}}
-             "deklarationsmeddelelse" {:type #{:string :null}}
-             "begrundelse" {:type #{:string :null}}},
+            {"cat" {:type #{:string}},
+             "code" {:type #{:string}},
+             "headline" {:type #{:string}},
+             "rule" {:type #{:string :null}},
+             "msg-1" {:type #{:string :null}}
+             "msg-2" {:type #{:string :null}}
+             "cause" {:type #{:string :null}}},
             :title "ent-1",
             :type #{:object},
             :$schema "http://json-schema.org/draft-07/schema#"}
