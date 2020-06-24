@@ -106,8 +106,7 @@ This will generate the following schema:
     {:title "ent-1"
      :optional #{:meta}}
     {:things [{:quantity 1}]}
-	{:things [{:quantity 1
-               :limit 2}]})
+    {:things [{:quantity 1 :limit 2}]})
 ```
 
 or if you have multiple documents pre-ordered in a sequence:
@@ -116,8 +115,7 @@ or if you have multiple documents pre-ordered in a sequence:
 (apply
     (partial json-schema.infer/infer {:title "ent-1"})
     [{:things [{:quantity 1}]}
-	 {:things [{:quantity 1
-                :limit 2}]}])
+     {:things [{:quantity 1 :limit 2}]}])
 ```
 
 If you want optionality by allowing null values, this is the way:
@@ -148,7 +146,7 @@ There's a helper function generating the Schema directly to a JSON string:
 ```clojure
 (json-schema.infer/infer->json
     {:title "ent-1"}
-	{:thing {:quantities [1.3 2.2 3.1]}})
+    {:thing {:quantities [1.3 2.2 3.1]}})
 ```
 
 More usage examples can be found in the tests.
