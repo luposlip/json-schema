@@ -67,6 +67,12 @@
 (defn- assoc-in-from-either [data path d1 d2]
   (let [type? (> (count path) 1)
         ignore-one? (some empty? [d1 d2])
+        root-keeper (fn [data]
+                      (let [pd (map #(get-in % path) [d1 d2])]
+                        (if (and (some nil? pd)
+                                 (some (comp not nil?) pd))
+                          (assoc-in data path (first (remove nil? pd)))
+                          data)))
         update-type (fn [data]
                       (if type?
                         (let [type-path (conj path :type)]
@@ -79,8 +85,11 @@
                                             (get-in d2 type-path #{:null})))))
                         data))]
     (-> data
-        (assoc-in path (get-in d1 path (get-in d2 path)))
+        root-keeper
         update-type)))
+
+(defn- unroot [params]
+  (dissoc params :title :description :uri))
 
 (declare infer) ;; bc/o mutual recursion
 
@@ -112,7 +121,7 @@
                                 :properties (zipmap sks
                                                     (mapv
                                                      (comp (partial infer-strict
-                                                                    (dissoc params :title :description :uri))
+                                                                    (unroot params))
                                                            second)
                                                      data))
                                 :required (set (if optional
@@ -122,14 +131,13 @@
                                 {:type #{:array}
                                  :items (trampoline
                                          apply
-                                         (partial infer
-                                                  (dissoc params :title :description :uri))
+                                         (partial infer (unroot params))
                                          data)})
-          :else (merge sch
-                       (data-type
-                        (assoc params
-                               :recur-fn (partial infer-strict
-                                                  (dissoc params :title :description :uri))) data)))))
+          :else
+          (merge sch
+                 (data-type
+                  (assoc params :recur-fn (partial infer-strict (unroot params)))
+                  data)))))
 
 (defn infer
   "Schema inference from multiple documents of associative data.
@@ -143,13 +151,12 @@
    If a single document is passed, infer-strict is used directly.
 
    Params:
-     optional    - keys that shouldn't be required
-  
-   Optional params:
      title       - schema title
      description - schema description
      uri         - schema uri
-     schema      - continue building on schema"
+     schema      - continue building on schema
+     optional    - keys that shouldn't be required
+     nullable    - optionality by nullability"
   [params & docs]
   (if (= 1 (count docs))
     (infer-strict params (first docs))

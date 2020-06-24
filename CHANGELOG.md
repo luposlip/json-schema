@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.7 - 2020-06-24
+
+### Fixed
+- Bug when nested siblings had different optionality
+
 ## 0.2.6 - 2020-06-24
 
 ### Added
