@@ -187,3 +187,35 @@
                  (v/validate schema
                              (assoc (second data) ;; not allowed to change type
                                     :foo [{:bar "baz"}]))))))
+
+(deftest implicit-optionality-many-siblings
+  (let [d [{:kategori "Ejendom",
+            :kode "100",
+            :overskrift "Ejendomsværdi skal fastsættes"}
+           {:kategori "Grundværdi",
+            :kode "200",
+            :overskrift "Grundværdi skal ansættes"}
+           {:begrundelse "Fritagelse for grundskyld efter § 7.",
+            :deklarationsmeddelelse "DM fuld fritagelse",
+            :kategori "Grundværdi",
+            :kode "211",
+            :lovhenvisning "EVL 13, stk. 2 og KESL § 7",
+            :overskrift "Grundværdi skal ikke beskattes",
+            :vurderingsmeddelelse "VM fuld fritagelse"}]
+        schema (apply (partial t/infer {:title "ent-1" :nullable true}) d)]
+    (is (= {:required #{"kategori" "kode" "overskrift"},
+            :additionalProperties false,
+            :properties
+            {"kategori" {:type #{:string}},
+             "kode" {:type #{:string}},
+             "overskrift" {:type #{:string}},
+             "lovhenvisning" {:type #{:string :null}},
+             "vurderingsmeddelelse" {:type #{:string :null}}
+             "deklarationsmeddelelse" {:type #{:string :null}}
+             "begrundelse" {:type #{:string :null}}},
+            :title "ent-1",
+            :type #{:object},
+            :$schema "http://json-schema.org/draft-07/schema#"}
+           schema))
+    (is (= (map (partial v/validate schema) d)
+           d))))
