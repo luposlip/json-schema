@@ -103,8 +103,7 @@ This will generate the following schema:
 
 ```clojure
 (json-schema.infer/infer
-    {:title "ent-1"
-     :optional #{:meta}}
+    {:title "ent-1"}
     {:things [{:quantity 1}]}
     {:things [{:quantity 1 :limit 2}]})
 ```
