@@ -74,7 +74,7 @@ The generation of JSON Schemas is pretty naive, but should work in many scenario
 
 Schema generation is strict possible. This means that all found keys are set as required, and no other keys are allowed. But it's possible to add a `:optional` set of keys, which will be treated as non-required.
 
-Please note that the optionality will be schema wise, so keys used in different places in the structure having the same name will be treated the same! This will (probably) change in future releases, so you can supply a set keys for global optionality, or path vectors for specificity. A combination with wildcard paths could also be possible in a future release.
+Please note that the explicit optionality will be schema wide, so keys used in different places in the structure having the same name will be treated the same! This might (probably) change in future releases, so you can supply a set keys for global optionality, or path vectors for specificity. A combination with wildcard paths could also be possible in a future release.
 
 To generate a schema:
 
@@ -155,9 +155,7 @@ NB: In Clojure any data is allowed as key in a map. This is not the case in JSON
 
 ### Future
 
-Only a single input sample is currently used to generate the Schema. In a future release the generation will allow a list of sample documents, and use their potential differences to infer the value of certain Schema property attributes. In example automatically setting `required` to either `true` or `false`.
-
-Also a future release will allow for a configuration map, setting property attributes such as minimum and maximum values for numbers, length constraints for strings etc.
+A future release might allow for a configuration map, setting property attributes such as minimum and maximum values for numbers, length constraints for strings etc.
 
 ## deps.edn
 
