@@ -96,17 +96,18 @@
 (defn infer-strict
   "Naive but strict schema inference from associative data.
    Strict in the sense that everything is required, and nothing
-   else is allowed.
+   else is allowed - unless additional-props is explicitly set to true.
 
    Params:
-     optional    - keys that shouldn't be required
+     optional         - keys that shouldn't be required
+     additional-props - if additional properties are allowed in schema objects
   
    Optional params:
      title       - schema title
      description - schema description
      uri         - schema uri
      schema      - continue building on schema"
-  [{:keys [title schema optional] :as params} data]
+  [{:keys [title schema optional additional-props] :as params} data]
   {:pre [(and
           (or (associative? data)
               (or (nil? title) (string? title)))
@@ -117,7 +118,7 @@
     (cond (map? data) (merge sch
                              (let [sks (map sanitize-key (keys data))]
                                {:type #{:object}
-                                :additionalProperties false
+                                :additionalProperties (or additional-props false)
                                 :properties (zipmap sks
                                                     (mapv
                                                      (comp (partial infer-strict

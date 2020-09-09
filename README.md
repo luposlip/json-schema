@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.2.7"]
+[luposlip/json-schema "0.2.8"]
 ```
 
 A Clojure library for:
@@ -136,6 +136,16 @@ If you want optionality by allowing null values, this is the way:
 (json-schema.infer/infer-strict
     {:title "ent-1"
      :optional #{:meta}}
+    {:things [{:quantity 1}]
+     :meta 123})
+```
+
+If you want to allow **additional properties**, set `additional-props` to true:
+
+```clojure
+(json-schema.infer/infer-strict
+    {:title "ent-1"
+     :additional-props true}
     {:things [{:quantity 1}]
      :meta 123})
 ```

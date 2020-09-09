@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.8 - 2020-09-09
+
+### Added
+
+- Infer: optional parameter `additional-props` allow additional properties for objects described by generated schema
+
 ## 0.2.7 - 2020-06-24
 
 ### Fixed
@@ -101,6 +107,8 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.8]: https://github.com/luposlip/json-schema/compare/0.2.7...0.2.8
+[0.2.7]: https://github.com/luposlip/json-schema/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/luposlip/json-schema/compare/0.2.5...0.2.6
 [0.2.5]: https://github.com/luposlip/json-schema/compare/0.2.4...0.2.5
 [0.2.4]: https://github.com/luposlip/json-schema/compare/0.2.3...0.2.4

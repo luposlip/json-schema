@@ -219,3 +219,16 @@
            schema))
     (is (= (map (partial v/validate schema) d)
            d))))
+
+(deftest infer-additional-properties
+  (let [data {:things [{:quantity 1} {:quantity 2}]
+              :yearly {2020 1
+                       2021 2
+                       2022 2.5
+                       2023 3
+                       2024 (/ 1 3)}}
+        schema (t/infer-strict {:title "ent-1"} data)
+        more-schema (t/infer-strict {:title "ent-1" :additional-props true} data)
+        more-data (assoc data :more-data {:hey "you!"})]
+    (is (thrown? ExceptionInfo (v/validate schema more-data)))
+    (is (= more-data (v/validate more-schema more-data)))))
