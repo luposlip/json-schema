@@ -25,7 +25,7 @@
         (JSONObject. ^JSONTokener json-tokener)))
     (throw (ex-info "Unsupported JSON input" {:input input}))))
 
-(defn ^JSONObject prepare-schema
+(defn ^JSONObject prepare-schema*
   "Prepares JSON Schema based on input string or map"
   [input]
   {:pre [(or (map? input)
@@ -35,6 +35,8 @@
                (= \{ (first input))))
     (SchemaLoader/load (JSONObject. (prepare-tokener input)))
     (throw (ex-info "Unsupported Schema input" {:input input}))))
+
+(def ^JSONObject prepare-schema (memoize prepare-schema*))
 
 (defmulti validate
   "Validate JSON according to JSON Schema.

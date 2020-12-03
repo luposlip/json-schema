@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.2.9 - 2020-12-03
+
+### Changed
+
+- Significant speed-up when performing batch validation
+
 ## 0.2.8 - 2020-09-09
 
 ### Added
@@ -107,6 +113,7 @@ All notable changes to this project will be documented in this file. This change
 ### Added
 - Initial public release
 
+[0.2.9]: https://github.com/luposlip/json-schema/compare/0.2.8...0.2.9
 [0.2.8]: https://github.com/luposlip/json-schema/compare/0.2.7...0.2.8
 [0.2.7]: https://github.com/luposlip/json-schema/compare/0.2.6...0.2.7
 [0.2.6]: https://github.com/luposlip/json-schema/compare/0.2.5...0.2.6
