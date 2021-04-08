@@ -1,7 +1,7 @@
 (ns json-schema.core
   (:require [cheshire.core :as json])
   (:import [org.json JSONObject JSONArray JSONTokener]
-           [org.everit.json.schema.loader SchemaLoader]
+           [org.everit.json.schema.loader SchemaLoader SchemaClient]
            [org.everit.json.schema Schema]
            [org.everit.json.schema ValidationException]))
 
@@ -25,16 +25,25 @@
         (JSONObject. ^JSONTokener json-tokener)))
     (throw (ex-info "Unsupported JSON input" {:input input}))))
 
+(defn- is-schema-input-valid? [input]
+  (or (map? input)
+      (and (string? input)
+           (= \{ (first input)))))
+
 (defn ^JSONObject prepare-schema*
-  "Prepares JSON Schema based on input string or map"
-  [input]
-  {:pre [(or (map? input)
-             (string? input))]}
-  (if (or (map? input)
-          (and (string? input)
-               (= \{ (first input))))
+  "Prepares JSON Schema based on input string or map.
+  You can pass optional parameter :classpath-aware, in case you want to
+  refer to relative file schemas via classpath in $ref fields."
+  [input & params]
+  (when-not (is-schema-input-valid? input)
+    (throw (ex-info "Unsupported Schema input" {:input input})))
+  (if-not (some #{:classpath-aware} params)
     (SchemaLoader/load (JSONObject. (prepare-tokener input)))
-    (throw (ex-info "Unsupported Schema input" {:input input}))))
+    (let [schema-loader (-> (SchemaLoader/builder)
+                            (.schemaClient (SchemaClient/classPathAwareClient))
+                            (.schemaJson (JSONObject. (prepare-tokener input)))
+                            (.build))]
+      (.build (.load schema-loader)))))
 
 (def ^JSONObject prepare-schema (memoize prepare-schema*))
 
