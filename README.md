@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.2.9"]
+[luposlip/json-schema "0.3.0"]
 ```
 
 A Clojure library for:
@@ -50,6 +50,8 @@ Example usage:
   (comment do whatever you only wanna do when JSON is valid)
   :success)
 ```
+
+With version 0.3.x you can reuse schemas via the [`$ref` attribute](https://json-schema.org/understanding-json-schema/structuring.html#reuse). See `/test/json-schema/core_test.clj#classpath-ref-resolution` for an example.
 
 Pseudo-example for pipelining (note the reuse of the prepared schema):
 
@@ -175,9 +177,13 @@ If you use `tools.deps` (as opposed to Leiningen), you'll have to copy all depen
 
 To the maintainers of: https://github.com/everit-org/json-schema, on which _validation_ in this Clojure Library is based.
 
+To the contributors:
+- @patrkris
+- @jurgiskg
+
 ## Copyright & License
 
-Copyright (C) 2020 Henrik Mohr
+Copyright (C) 2020-2021 Henrik Mohr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

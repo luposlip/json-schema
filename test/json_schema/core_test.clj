@@ -142,6 +142,6 @@
 
       (testing "invalid EDN input for referred field via classpath FAILS"
         (is (thrown-with-msg?
-              Exception
-              #"JSON Validation error"
-              (json/validate schema invalid-input)))))))
+             Exception
+             #"JSON Validation error"
+             (json/validate schema invalid-input)))))))
