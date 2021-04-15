@@ -1,6 +1,7 @@
 (ns json-schema.core-test
   (:require [clojure.test :refer :all]
-            [json-schema.core :as json])
+            [json-schema.core :as json]
+            [clojure.java.io :as io])
   (:import [org.everit.json.schema ValidationException]
            clojure.lang.ExceptionInfo))
 
@@ -127,3 +128,20 @@
              Exception
              #"JSON Validation error"
              (json/validate schema json-edn-invalid)))))))
+
+(deftest classpath-ref-resolution
+  (testing "JSON Schema with classpath ref loading"
+    (let [schema-input (-> "person.json" io/resource slurp)
+          schema (json/prepare-schema schema-input :classpath-aware)
+          valid-input {:address {:street_address "Penguin Avenue 15"
+                                 :city "Vilnius"}}
+          invalid-input {:address "Penguin Avenue 15, Vilnius"}]
+
+      (testing "valid EDN input for referred field via classpath VALIDATES"
+        (is (= valid-input (json/validate schema valid-input))))
+
+      (testing "invalid EDN input for referred field via classpath FAILS"
+        (is (thrown-with-msg?
+              Exception
+              #"JSON Validation error"
+              (json/validate schema invalid-input)))))))
