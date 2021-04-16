@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "address": {
-      "$ref": "classpath://definitions.json#/definitions/address"
+      "$ref": "classpath://ref/absolute/definitions.json#/definitions/address"
     }
   },
   "required": ["address"]

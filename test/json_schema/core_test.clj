@@ -130,18 +130,34 @@
              (json/validate schema json-edn-invalid)))))))
 
 (deftest classpath-ref-resolution
-  (testing "JSON Schema with classpath ref loading"
-    (let [schema-input (-> "person.json" io/resource slurp)
-          schema (json/prepare-schema schema-input :classpath-aware)
-          valid-input {:address {:street_address "Penguin Avenue 15"
+  (testing "JSON Schema validation with classpath ref resolution"
+    (let [valid-input {:address {:street_address "Penguin Avenue 15"
                                  :city "Vilnius"}}
           invalid-input {:address "Penguin Avenue 15, Vilnius"}]
 
-      (testing "valid EDN input for referred field via classpath VALIDATES"
-        (is (= valid-input (json/validate schema valid-input))))
+      (testing "Absolute classpath refs"
+        (let [schema-input (-> "ref/absolute/person.json" io/resource slurp)
+              schema (json/prepare-schema schema-input {:classpath-aware? true})]
 
-      (testing "invalid EDN input for referred field via classpath FAILS"
-        (is (thrown-with-msg?
-             Exception
-             #"JSON Validation error"
-             (json/validate schema invalid-input)))))))
+          (testing "valid EDN input for absolute classpath ref VALIDATES"
+            (is (= valid-input (json/validate schema valid-input))))
+
+          (testing "invalid EDN input for absolute classpath ref FAILS"
+            (is (thrown-with-msg?
+                  Exception
+                  #"JSON Validation error"
+                  (json/validate schema invalid-input))))))
+
+      (testing "Relative classpath refs"
+        (let [schema-input (-> "ref/relative/person.json" io/resource slurp)
+              schema (json/prepare-schema schema-input {:classpath-aware? true
+                                                        :default-resolution-scope "classpath://ref/relative/"})]
+
+          (testing "valid EDN input for relative classpath ref VALIDATES"
+            (is (= valid-input (json/validate schema valid-input))))
+
+          (testing "valid EDN input for relative classpath ref FAILS"
+            (is (thrown-with-msg?
+                  Exception
+                  #"JSON Validation error"
+                  (json/validate schema invalid-input)))))))))

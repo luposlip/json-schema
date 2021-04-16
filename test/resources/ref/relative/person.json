@@ -1,0 +1,12 @@
+{
+  "$id": "Person",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "address": {
+      "$ref": "definitions.json#/definitions/address"
+    }
+  },
+  "required": ["address"]
+}
