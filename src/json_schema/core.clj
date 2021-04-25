@@ -25,25 +25,42 @@
         (JSONObject. ^JSONTokener json-tokener)))
     (throw (ex-info "Unsupported JSON input" {:input input}))))
 
-(defn- is-schema-input-valid? [input]
-  (or (map? input)
-      (and (string? input)
-           (= \{ (first input)))))
+(defn- assert-schema-input-valid! [input]
+  (let [is-input-valid? (or (map? input)
+                      (and (string? input)
+                           (= \{ (first input))))]
+    (when-not is-input-valid?
+      (throw (ex-info "Unsupported Schema input" {:input input})))))
 
 (defn ^JSONObject prepare-schema*
-  "Prepares JSON Schema based on input string or map.
-  You can pass optional parameter :classpath-aware, in case you want to
-  refer to relative file schemas via classpath in $ref fields."
-  [input & params]
-  (when-not (is-schema-input-valid? input)
-    (throw (ex-info "Unsupported Schema input" {:input input})))
-  (if-not (some #{:classpath-aware} params)
-    (SchemaLoader/load (JSONObject. (prepare-tokener input)))
-    (let [schema-loader (-> (SchemaLoader/builder)
-                            (.schemaClient (SchemaClient/classPathAwareClient))
-                            (.schemaJson (JSONObject. (prepare-tokener input)))
-                            (.build))]
-      (.build (.load schema-loader)))))
+  "Prepares JSON Schema based on input string or map. An optional parameter map
+  can be supplied to refer to relative file schemas via classpath in $ref fields.
+
+  Setting :classpath-aware? to true enables absolute classpath resolution.
+  (prepare-schema* input {:classpath-aware? true})
+
+  Setting :default-resolution-scope enables relative classpath resolution.
+  Make sure to not use HTTP URIs in schema $id fields, as this
+  will cause it to resort to default $ref resolution via HTTP.
+  (prepare-schema* input {:classpath-aware? true
+                          :default-resolution-scope \"classpath://schemas/\"})"
+  ([input]
+   (assert-schema-input-valid! input)
+   (SchemaLoader/load (JSONObject. (prepare-tokener input))))
+  ([input params]
+   (assert-schema-input-valid! input)
+   (if-not (:classpath-aware? params)
+     (prepare-schema* input)
+     (let [resolution-scope (:default-resolution-scope params)
+           set-resolution-scope (fn [client] (if resolution-scope
+                                               (.resolutionScope client resolution-scope)
+                                               client))
+           schema-loader (-> (SchemaLoader/builder)
+                             (.schemaClient (SchemaClient/classPathAwareClient))
+                             (set-resolution-scope)
+                             (.schemaJson (JSONObject. (prepare-tokener input)))
+                             (.build))]
+       (.build (.load schema-loader))))))
 
 (def ^JSONObject prepare-schema (memoize prepare-schema*))
 
