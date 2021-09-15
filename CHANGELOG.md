@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.3.2 - 2021-09-15
+
+- Eliminated reflective function calls
+- Updated Java Library
+
+## 0.3.1 - 2021-04-25
+
+Now relative $ref's are supported.
+
+## 0.3.0 - 2021-04-15
+
+This release adds usage of $ref pointing to resources in the classpath.
+
 ## 0.2.9 - 2020-12-03
 
 ### Changed

@@ -49,7 +49,7 @@
                    (json/validate schema "{}" :include-original-exception)
                    (catch Throwable ex
                      ex))]
-          (is (instance? ValidationException (.getCause ex)))))
+          (is (instance? ValidationException (.getCause ^Exception ex)))))
 
       (testing "Causing ExceptionInfo when validation fails"
         (let [schema {:$schema "http://json-schema.org/draft-07/schema#"

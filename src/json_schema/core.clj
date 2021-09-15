@@ -1,16 +1,20 @@
 (ns json-schema.core
   (:require [cheshire.core :as json])
-  (:import [org.json JSONObject JSONArray JSONTokener]
-           [org.everit.json.schema.loader SchemaLoader SchemaClient]
+  (:import [java.io Reader StringReader]
+           [org.json JSONObject JSONArray JSONTokener]
+           [org.everit.json.schema.loader
+            SchemaLoader SchemaClient SchemaLoader$SchemaLoaderBuilder]
            [org.everit.json.schema Schema]
            [org.everit.json.schema ValidationException]))
 
 (defn- ^JSONTokener prepare-tokener
   "Prepares a JSONTokener instance for further processing"
-  [input] 
-  (JSONTokener. ^String (if (string? input)
-                          input
-                          (json/generate-string input))))
+  [input]
+  (JSONTokener.
+   ^Reader (StringReader.
+            ^String (if (string? input)
+                      input
+                      (json/generate-string input)))))
 
 (defn- prepare-json
   "Prepares JSON instance based on input string, map or vector"
@@ -18,11 +22,11 @@
   (if (or (associative? input)
           (and (string? input)
                (#{\{ \[} (first input))))
-    (let [json-tokener (prepare-tokener input)]
+    (let [json-tokener ^JSONTokener(prepare-tokener input)]
       (if (or (vector? input)
               (= \[ (first input))) 
-        (JSONArray. ^JSONTokener json-tokener)
-        (JSONObject. ^JSONTokener json-tokener)))
+        (JSONArray. json-tokener)
+        (JSONObject. json-tokener)))
     (throw (ex-info "Unsupported JSON input" {:input input}))))
 
 (defn- assert-schema-input-valid! [input]
@@ -52,13 +56,15 @@
    (if-not (:classpath-aware? params)
      (prepare-schema* input)
      (let [resolution-scope (:default-resolution-scope params)
-           set-resolution-scope (fn [client] (if resolution-scope
-                                               (.resolutionScope client resolution-scope)
-                                               client))
+           set-resolution-scope (fn [^SchemaLoader$SchemaLoaderBuilder builder]
+                                  (if resolution-scope
+                                    (.resolutionScope builder ^String resolution-scope)
+                                    builder))
            schema-loader (-> (SchemaLoader/builder)
                              (.schemaClient (SchemaClient/classPathAwareClient))
-                             (set-resolution-scope)
-                             (.schemaJson (JSONObject. (prepare-tokener input)))
+                             ^SchemaLoader$SchemaLoaderBuilder (set-resolution-scope)
+                             (.schemaJson
+                              ^JSONObject (JSONObject. (prepare-tokener input)))
                              (.build))]
        (.build (.load schema-loader))))))
 
