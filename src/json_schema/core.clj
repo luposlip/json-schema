@@ -20,11 +20,12 @@
   "Prepares JSON instance based on input string, map or vector"
   [input]
   (if (or (associative? input)
+          (sequential? input)
           (and (string? input)
                (#{\{ \[} (first input))))
-    (let [json-tokener ^JSONTokener(prepare-tokener input)]
-      (if (or (vector? input)
-              (= \[ (first input))) 
+    (let [json-tokener ^JSONTokener (prepare-tokener input)]
+      (if (or (sequential? input)
+              (= \[ (first input)))
         (JSONArray. json-tokener)
         (JSONObject. json-tokener)))
     (throw (ex-info "Unsupported JSON input" {:input input}))))
@@ -112,7 +113,7 @@
     (try
       (.validate ^Schema schema (prepare-json json))
       json
-      (catch ValidationException e 
+      (catch ValidationException e
         (let [errors (into [] (.getAllMessages ^ValidationException e))
               c (count errors)
               [n s] (if (> c 1)

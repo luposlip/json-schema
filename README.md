@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.3.2"]
+[luposlip/json-schema "0.3.3"]
 ```
 
 A Clojure library for:
@@ -90,7 +90,7 @@ This will generate the following schema:
 
 ```clojure
 {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type :object
           :additionalProperties false
           :properties {"things" {:type :array
@@ -183,14 +183,14 @@ To the contributors:
 
 ## Copyright & License
 
-Copyright (C) 2020-2021 Henrik Mohr
+Copyright (C) 2020-2022 Henrik Mohr
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
             http://www.apache.org/licenses/LICENSE-2.0
-            
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.

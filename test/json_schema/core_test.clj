@@ -16,26 +16,26 @@
 
       (testing "Numbers are not valid input"
         (is (thrown-with-msg? Exception #"Unsupported Schema input"
-                              (json/validate 1 2))) 
+                              (json/validate 1 2)))
         (is (thrown-with-msg? Exception #"Unsupported Schema input"
                               (json/validate 1 "2")))
         (is (thrown-with-msg? Exception #"Unsupported Schema input"
                               (json/validate "1" 2))))
-      
+
       (testing "Schema has to be a map"
         (is (thrown-with-msg? Exception #"Unsupported Schema input"
                               (json/validate "1" "2"))))
-      
+
       (testing "JSON has to be a map or an array"
         (is (thrown-with-msg? Exception #"Unsupported JSON input"
                               (json/validate schema "1"))))
-      
+
       (testing "ID has to be a number"
         (is (thrown? RuntimeException (json/validate schema "{\"id\" : \"1\"}"))))
-      
+
       (testing "Valid input as JSON string"
         (let [data "{\"id\": 1}"] (is (= data (json/validate schema data)))))
-      
+
       (testing "Valid input as EDN"
         (let [data {:id 1}] (is (= data (json/validate schema data)))))
 
@@ -75,9 +75,9 @@
           schema (json/prepare-schema json-schema-edn)
           json-edn-valid {:id 0.001}
           json-edn-invalid {:id 0}]
-      
+
       (testing "valid input VALIDATES"
-        (is (= json-edn-valid (json/validate schema json-edn-valid))))      
+        (is (= json-edn-valid (json/validate schema json-edn-valid))))
 
       (testing "valid input does NOT validate"
         (is (thrown?
@@ -116,9 +116,9 @@
           json-str-valid "[{\"some\":\"data\"}]"
           json-edn-valid [{:some "data"}]
           json-edn-invalid {:some "data"}]
-      
+
       (testing "valid JSON string input VALIDATES"
-        (is (= json-str-valid (json/validate schema json-str-valid))))      
+        (is (= json-str-valid (json/validate schema json-str-valid))))
 
       (testing "valid EDN input VALIDATES"
         (is (= json-edn-valid (json/validate schema json-edn-valid))))
@@ -161,3 +161,14 @@
                   Exception
                   #"JSON Validation error"
                   (json/validate schema invalid-input)))))))))
+
+(deftest validate-list
+  (testing "Validate EDN list as JSON array"
+    (let [schema (json/prepare-schema {:$schema "http://json-schema.org/draft-04/schema"
+                                       :type "array"})]
+
+      (testing "Valid input as EDN vector"
+        (is (= ["a" "b"] (json/validate schema ["a" "b"]))))
+
+      (testing "Valid input as EDN list"
+        (is (= '("a" "b") (json/validate schema '("a" "b"))))))))
