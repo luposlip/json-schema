@@ -169,10 +169,6 @@ NB: In Clojure any data is allowed as key in a map. This is not the case in JSON
 
 A future release might allow for a configuration map, setting property attributes such as minimum and maximum values for numbers, length constraints for strings etc.
 
-## deps.edn
-
-If you use `tools.deps` (as opposed to Leiningen), you'll have to copy all dependencies from the Java library manually into `deps.edn`. This is due to [a bug in `tools.deps`](https://dev.clojure.org/jira/browse/TDEPS-46). Refer to [issue #1](https://github.com/luposlip/json-schema/issues/1) for more information.
-
 ## Thanks
 
 To the maintainers of: https://github.com/everit-org/json-schema, on which _validation_ in this Clojure Library is based.
