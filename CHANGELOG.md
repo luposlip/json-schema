@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.3.4 - 2022-05-12
+
+- Updated Clojure -> 1.11.1
+- Updated other dependencies
+
 ## 0.3.3 - 2022-01-05
 
 - Fixed issue when EDN input to be validated contains lists
