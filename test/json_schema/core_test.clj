@@ -172,3 +172,58 @@
 
       (testing "Valid input as EDN list"
         (is (= '("a" "b") (json/validate schema '("a" "b"))))))))
+
+(deftest validate-uuid
+  (testing "Validate EDN where data is uuid"
+    (let [uuid-validator (fn [value]
+                           (when-not (uuid? (parse-uuid value))
+                             (format "[%s] is not a valid UUID value" value)))
+          json-str-valid "{\"id\" : \"7c0fcade-fdcc-4d48-86a7-da55ebb82f04\"}"
+          json-str-invalid "{\"id\" : \"Tc0fcade-fdcc-4d48-86a7-da55ebb82f04\"}"
+          json-str-empty "{\"id\" : \"\"}"]
+
+      (testing "Class path unaware"
+        (let [schema (json/prepare-schema {:$schema "http://json-schema.org/draft-04/schema"
+                                           :id         "https://luposlip.com/some-other-schema.json"
+                                           :type       "object"
+                                           :properties {:id {:type    "string"
+                                                             :format  "uuid"}}}
+                                          {:format-validators {"uuid" uuid-validator}})]
+          (testing "Valid uuid"
+            (is (= json-str-valid (json/validate schema json-str-valid))))
+
+          (testing "Invalid uuid"
+            (is (thrown-with-msg?
+                  Exception
+                  #"JSON Validation error"
+                  (json/validate schema json-str-invalid))))
+
+          (testing "Empty instead of uuid"
+            (is (thrown-with-msg?
+                  Exception
+                  #"JSON Validation error"
+                  (json/validate schema json-str-empty))))))
+
+      (testing "Class path aware"
+        (let [schema (json/prepare-schema {:$schema "http://json-schema.org/draft-04/schema"
+                                           :id         "https://luposlip.com/some-other-schema.json"
+                                           :type       "object"
+                                           :properties {:id {:type    "string"
+                                                             :format  "uuid"}}}
+                                          {:classpath-aware? true
+                                           :default-resolution-scope "classpath://ref/relative/"
+                                           :format-validators {"uuid" uuid-validator}})]
+          (testing "Valid uuid"
+            (is (= json-str-valid (json/validate schema json-str-valid))))
+
+          (testing "Invalid uuid"
+            (is (thrown-with-msg?
+                  Exception
+                  #"JSON Validation error"
+                  (json/validate schema json-str-invalid))))
+
+          (testing "Empty instead of uuid"
+            (is (thrown-with-msg?
+                  Exception
+                  #"JSON Validation error"
+                  (json/validate schema json-str-empty)))))))))

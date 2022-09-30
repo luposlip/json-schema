@@ -5,7 +5,9 @@
            [org.everit.json.schema.loader
             SchemaLoader SchemaClient SchemaLoader$SchemaLoaderBuilder]
            [org.everit.json.schema Schema]
-           [org.everit.json.schema ValidationException]))
+           [org.everit.json.schema ValidationException]
+           [org.everit.json.schema FormatValidator]
+           [java.util Optional]))
 
 (defn- ^JSONTokener prepare-tokener
   "Prepares a JSONTokener instance for further processing"
@@ -37,9 +39,25 @@
     (when-not is-input-valid?
       (throw (ex-info "Unsupported Schema input" {:input input})))))
 
+(defn- format-validator [key validation-fn]
+  (reify FormatValidator
+    (formatName [_] key)
+    (validate [_ value]
+      (if-let [validation-error-message (validation-fn value)]
+        (Optional/of validation-error-message)
+        (Optional/empty)))))
+
 (defn ^JSONObject prepare-schema*
   "Prepares JSON Schema based on input string or map. An optional parameter map
   can be supplied to refer to relative file schemas via classpath in $ref fields.
+
+  Setting :format-validators to map of format name and validation function adds
+  them as custom format validators.
+  Validator takes value and returns validation error message or nil if success
+  (prepare-schema* input {
+    :format-validators {\"uuid\" (fn [value]
+                                   (when-not (uuid? (parse-uuid value))
+                                     (format \"[%s] is not a valid UUID value\" value)))}})
 
   Setting :classpath-aware? to true enables absolute classpath resolution.
   (prepare-schema* input {:classpath-aware? true})
@@ -54,20 +72,27 @@
    (SchemaLoader/load (JSONObject. (prepare-tokener input))))
   ([input params]
    (assert-schema-input-valid! input)
-   (if-not (:classpath-aware? params)
-     (prepare-schema* input)
-     (let [resolution-scope (:default-resolution-scope params)
-           set-resolution-scope (fn [^SchemaLoader$SchemaLoaderBuilder builder]
-                                  (if resolution-scope
-                                    (.resolutionScope builder ^String resolution-scope)
-                                    builder))
-           schema-loader (-> (SchemaLoader/builder)
-                             (.schemaClient (SchemaClient/classPathAwareClient))
-                             ^SchemaLoader$SchemaLoaderBuilder (set-resolution-scope)
-                             (.schemaJson
-                              ^JSONObject (JSONObject. (prepare-tokener input)))
-                             (.build))]
-       (.build (.load schema-loader))))))
+   (let [set-format-validators (fn [^SchemaLoader$SchemaLoaderBuilder builder]
+                                 (doseq [[k validation-fn] (:format-validators params)]
+                                   (.addFormatValidator builder (format-validator k validation-fn)))
+                                 builder)]
+     (if-not (:classpath-aware? params)
+       (.build (.load (-> (SchemaLoader/builder)
+                          ^SchemaLoader$SchemaLoaderBuilder (set-format-validators)
+                          (.schemaJson ^JSONObject (JSONObject. (prepare-tokener input)))
+                          (.build))))
+       (let [resolution-scope (:default-resolution-scope params)
+             set-resolution-scope (fn [^SchemaLoader$SchemaLoaderBuilder builder]
+                                    (if resolution-scope
+                                      (.resolutionScope builder ^String resolution-scope)
+                                      builder))
+             schema-loader (-> (SchemaLoader/builder)
+                               (.schemaClient (SchemaClient/classPathAwareClient))
+                               ^SchemaLoader$SchemaLoaderBuilder (set-resolution-scope)
+                               ^SchemaLoader$SchemaLoaderBuilder (set-format-validators)
+                               (.schemaJson ^JSONObject (JSONObject. (prepare-tokener input)))
+                               (.build))]
+         (.build (.load schema-loader)))))))
 
 (def ^JSONObject prepare-schema (memoize prepare-schema*))
 
