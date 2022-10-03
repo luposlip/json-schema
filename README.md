@@ -181,9 +181,7 @@ If you use `tools.deps` (as opposed to Leiningen), you'll have to copy all depen
 
 To the maintainers of: https://github.com/everit-org/json-schema, on which _validation_ in this Clojure Library is based.
 
-To the contributors:
-- @patrkris
-- @jurgiskg
+To the contributors!
 
 ## Copyright & License
 
