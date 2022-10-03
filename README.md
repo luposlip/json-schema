@@ -3,7 +3,7 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.3.4"]
+[luposlip/json-schema "0.4.0"]
 ```
 
 A Clojure library for:
@@ -69,6 +69,10 @@ Pseudo-example for pipelining (note the reuse of the prepared schema):
 ```
 
 More usage examples can be seen in the tests.
+
+### Custom Format Validators
+
+Check the unit test for examples on how to do this.
 
 ## Usage: Generation
 

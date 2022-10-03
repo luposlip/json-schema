@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.4.0 - 2022-10-03
+
+- Added Custom Format Validators (thanks to @ModestasPeciokas)
+- Updated dependencies
+
+For an example on how to use the Custom Format Validators, check the unit tests.
+
 ## 0.3.4 - 2022-05-12
 
 - Updated Clojure -> 1.11.1
