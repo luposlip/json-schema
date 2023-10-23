@@ -2,11 +2,17 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.4.2 - 2023-10-23
+
+### Fixed
+
+- Force update to `org.json/json` to version `20231013`, resolves CVE-2023-5072
+
 ## 0.4.1 - 2023-03-02
 
 ### Fixed
 
-- Force update to `org.json/json` version `20230227`, resolves CVE-2022-45688
+- Force update to `org.json/json` to version `20230227`, resolves CVE-2022-45688
 
 ## 0.4.0 - 2022-10-03
 
