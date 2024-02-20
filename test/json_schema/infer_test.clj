@@ -5,9 +5,9 @@
   (:import clojure.lang.ExceptionInfo))
 
 (deftest infer-map
-  
+
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type #{:object}
           :additionalProperties false
           :properties {"thing" {:type #{:integer}}}
@@ -15,7 +15,7 @@
          (t/infer-strict {:title "ent-1"} {:thing 1})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type #{:object}
           :additionalProperties false
           :properties {"thing" {:type #{:object}
@@ -26,7 +26,7 @@
          (t/infer-strict {:title "ent-1"} {:thing {:quantity 1}})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type #{:object}
           :additionalProperties false
           :properties {"thing" {:type #{:object}
@@ -35,9 +35,9 @@
                                 :required #{"quantity"}}}
           :required #{"thing"}}
          (t/infer-strict {:title "ent-1"} {:thing {:quantity 1.1}})))
-  
+
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type #{:object}
           :additionalProperties false
           :properties {"thing" {:type #{:object}
@@ -48,7 +48,7 @@
          (t/infer-strict {:title "ent-1"} {:thing {:quantity "11.111,11"}})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type #{:object}
           :additionalProperties false
           :properties {"things" {:type #{:array}
@@ -60,7 +60,7 @@
          (t/infer-strict {:title "ent-1"} {:things [{:quantity 1} {:quantity 2}]})))
 
   (is (= {:$schema "http://json-schema.org/draft-07/schema#"
-          :title "ent-1" 
+          :title "ent-1"
           :type #{:object}
           :additionalProperties false
           :properties {"thing" {:type #{:object}
@@ -91,7 +91,7 @@
           :items {:type #{:string}}}
          (t/infer-strict {:title "ent-1"} ["hej"])))
 
-  (is (= {:$schema "http://json-schema.org/draft-07/schema#",	  
+  (is (= {:$schema "http://json-schema.org/draft-07/schema#",
           :title "ent-1",
           :type #{:array},
           :items
@@ -232,3 +232,39 @@
         more-data (assoc data :more-data {:hey "you!"})]
     (is (thrown? ExceptionInfo (v/validate schema more-data)))
     (is (= more-data (v/validate more-schema more-data)))))
+
+(deftest infer-seq
+  (let [res {:$schema "http://json-schema.org/draft-07/schema#",
+             :title "ent-1",
+             :type #{:object},
+             :additionalProperties false,
+             :properties {"quantity" {:type #{:integer}}},
+             :required #{"quantity"}}]
+    (is (= res
+         (t/infer {:title "ent-1" :additional-props false :nullable true}
+                         (take 1000 (repeat {:quantity 1})))))
+    (is (= res
+           (t/infer-strict {:title "ent-1" :additional-props false :nullable true}
+                           (take 1000 (repeat {:quantity 1})))))
+    (is (= res
+           (apply (partial t/infer {:title "ent-1" :additional-props false :nullable true})
+                  (take 1000 (repeat {:quantity 1})))))))
+
+(deftest infer-nil
+  (is (thrown-with-msg? clojure.lang.ExceptionInfo
+                        #"\:nullable true"
+                        (t/infer {:title "ent-1" :additional-props false}
+                                 {:quantity 1
+                                  :parent nil})))
+
+  (is (= {:$schema "http://json-schema.org/draft-07/schema#",
+          :title "ent-1",
+          :type #{:object},
+          :additionalProperties false,
+          :properties
+          {"quantity" {:type #{:integer}}, "parent" {:type #{:null}}},
+          :required #{"parent" "quantity"}}
+         (t/infer {:title "ent-1" :additional-props false
+                   :nullable true}
+                  {:quantity 1
+                   :parent nil}))))

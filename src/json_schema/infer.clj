@@ -101,7 +101,7 @@
    Params:
      optional         - keys that shouldn't be required
      additional-props - if additional properties are allowed in schema objects
-  
+
    Optional params:
      title       - schema title
      description - schema description
@@ -134,6 +134,7 @@
                                          apply
                                          (partial infer (unroot params))
                                          data)})
+          (seq? data) (trampoline apply (partial infer params) data)
           :else
           (merge sch
                  (data-type
@@ -151,13 +152,24 @@
 
    If a single document is passed, infer-strict is used directly.
 
+   Multiple documents can be passed either via apply:
+   (apply (partial infer params) vector-of-inputs
+
+   Or if you have a (lazy) seq of things, infer directly:
+   (infer params lazy-inputs)
+   Example:
+   (infer {:additional-props false
+           :nullable true}
+          (map slurp list-of-filenames))
+
    Params:
-     title       - schema title
-     description - schema description
-     uri         - schema uri
-     schema      - continue building on schema
-     optional    - keys that shouldn't be required
-     nullable    - optionality by nullability"
+     title            - schema title
+     description      - schema description
+     uri              - schema uri
+     schema           - continue building on schema
+     optional         - keys that shouldn't be required
+     additional-props - don't allow props not in schema
+     nullable         - optionality by nullability"
   [params & docs]
   (if (= 1 (count docs))
     (infer-strict params (first docs))
@@ -192,6 +204,9 @@
                   :maxLength 20}
     (associative? data) (trampoline recur-fn data)
     (and (nil? data) nullable) {:type #{:null}}
+    (nil? data) (throw (ex-info "Found null value - do you need to set :nullable true?"
+                                {:data data
+                                 :params params}))
     :else (throw (ex-info "Not yet supporting data-type" {:data data
                                                           :params params}))))
 
@@ -199,4 +214,3 @@
   "A helper function that returns inferred schema as JSON"
   [params data]
   (->> data (infer-strict params) json/encode))
-

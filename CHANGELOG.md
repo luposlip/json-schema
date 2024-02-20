@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.4.3 - 2024-02-20
+
+### Enhanced
+
+- When infer* receives a lazy seq, it acts as if it's individual documents. This
+  makes great sense when you want to generate a schema for eg. a folder
+  containing data files.
+- Better error messages when finding `nil` values (suggest `:nullable true`)
+- Update Java library
+
 ## 0.4.2 - 2023-10-23
 
 ### Fixed
