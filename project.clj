@@ -1,9 +1,9 @@
-(defproject luposlip/json-schema "0.4.5"
+(defproject luposlip/json-schema "0.4.6"
   :description "Clojure library for JSON Schema validation and generation - Draft-07 compatible"
   :url "https://github.com/luposlip/json-schema"
   :license {:name "Apache License, Version 2.0"
             :url "https://www.apache.org/licenses/LICENSE-2.0"}
-  :dependencies [[org.clojure/clojure "1.11.3"]
+  :dependencies [[org.clojure/clojure "1.12.0"]
                  [cheshire "5.13.0"]
                  [org.json/json "20240303"]
                  [com.github.erosb/everit-json-schema "1.14.4" :exclusions [org.json/json]]]

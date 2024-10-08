@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file. This change log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
+## 0.4.6 - 2024-10-08
+
+- Update Clojure to `1.12.0`
+
 ## 0.4.5 - 2024-06-03
 
 - Update dependency `org.json/json` to newest

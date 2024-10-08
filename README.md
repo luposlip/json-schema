@@ -1,9 +1,9 @@
-![Clojure CI](https://github.com/luposlip/json-schema/workflows/Clojure%20CI/badge.svg?branch=master) [![Clojars Project](https://img.shields.io/clojars/v/luposlip/json-schema.svg)](https://clojars.org/luposlip/json-schema) [![Dependencies Status](https://versions.deps.co/luposlip/json-schema/status.svg)](https://versions.deps.co/luposlip/json-schema) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Downloads](https://versions.deps.co/luposlip/json-schema/downloads.svg)](https://versions.deps.co/luposlip/json-schema)
+![Clojure CI](https://github.com/luposlip/json-schema/workflows/Clojure%20CI/badge.svg?branch=main) [![Clojars Project](https://img.shields.io/clojars/v/luposlip/json-schema.svg)](https://clojars.org/luposlip/json-schema) [![Dependencies Status](https://versions.deps.co/luposlip/json-schema/status.svg)](https://versions.deps.co/luposlip/json-schema) [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![Downloads](https://versions.deps.co/luposlip/json-schema/downloads.svg)](https://versions.deps.co/luposlip/json-schema)
 
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.4.5"]
+[luposlip/json-schema "0.4.6"]
 ```
 
 A Clojure library for:
