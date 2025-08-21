@@ -9,9 +9,9 @@
            [org.everit.json.schema FormatValidator]
            [java.util Optional]))
 
-(defn- ^JSONTokener prepare-tokener
+(defn- prepare-tokener
   "Prepares a JSONTokener instance for further processing"
-  [input]
+  ^JSONTokener [input]
   (JSONTokener.
    ^Reader (StringReader.
             ^String (if (string? input)
@@ -47,7 +47,7 @@
         (Optional/of validation-error-message)
         (Optional/empty)))))
 
-(defn ^JSONObject prepare-schema*
+(defn prepare-schema*
   "Prepares JSON Schema based on input string or map. An optional parameter map
   can be supplied to refer to relative file schemas via classpath in $ref fields.
 
@@ -67,9 +67,9 @@
   will cause it to resort to default $ref resolution via HTTP.
   (prepare-schema* input {:classpath-aware? true
                           :default-resolution-scope \"classpath://schemas/\"})"
+  ^JSONObject
   ([input]
-   (assert-schema-input-valid! input)
-   (SchemaLoader/load (JSONObject. (prepare-tokener input))))
+   (assert-schema-input-valid! input)   (SchemaLoader/load (JSONObject. (prepare-tokener input))))
   ([input params]
    (assert-schema-input-valid! input)
    (let [set-format-validators (fn [^SchemaLoader$SchemaLoaderBuilder builder]
