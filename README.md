@@ -3,10 +3,11 @@
 # Clojure JSON Schema Validator & Generator
 
 ```clojure
-[luposlip/json-schema "0.4.7"]
+[luposlip/json-schema "0.4.8"]
 ```
 
 A Clojure library for:
+
 - validation of EDN or JSON data according to JSON Schema https://json-schema.org
 - generation of JSON Schemas based on EDN data
 
@@ -167,7 +168,6 @@ There's a helper function generating the Schema directly to a JSON string:
 More usage examples can be found in the tests.
 
 NB: In Clojure any data is allowed as key in a map. This is not the case in JSON, where keys can only be string. Because of that all non-string keys are converted to strings in the generated JSON schema. Clojure data with other types of keys will still validate based on the generated schema.
-
 
 ### Future
 
